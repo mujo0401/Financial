@@ -30,3 +30,4 @@ function categorizeTransaction(description) {
   // Implement your categorization logic here
   // ...
 }
+WS
