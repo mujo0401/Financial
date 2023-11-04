@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const FinancialService = {
   getFinancialSummary: async function() {
@@ -26,6 +26,19 @@ const FinancialService = {
       return { data: null, error: error.response ? error.response.data.message : 'Failed to fetch recent transactions' };
     }
   },
+
+uploadCategorizedTransactions: async function(categorizedData) {
+  try {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/upload-categorized-transactions`, categorizedData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    return { data: response.data, error: null };
+  } catch (error) {
+    return { data: null, error: error.response ? error.response.data.message : 'Failed to upload categorized transactions' };
+  }
+},
 
   getFinancialGoals: async function() {
     try {

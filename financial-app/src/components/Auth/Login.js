@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+/*import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import styled from 'styled-components';
 import AuthService from '../../Services/AuthService';  // Update the path according to your project structure
-//import LoadingSpinner from '../LoadingSpinner';       // Update the path according to your project structure
+import LoadingSpinner from '../LoadingSpinner';       // Update the path according to your project structure
 
 const FormContainer = styled.div`
   background: linear-gradient(135deg, ${props => props.theme.colors.primary}, ${props => props.theme.colors.secondary});
@@ -85,7 +85,7 @@ const SubmitButton = styled.button`
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object({
     username: Yup.string().required('Username is required'),
@@ -101,7 +101,7 @@ const Login = () => {
       try {
         const { token } = await AuthService.authenticateUser(values.username, values.password);
         localStorage.setItem('token', token);
-        history.push('/dashboard');
+        navigate('/dashboard');
       } catch (err) {
         setError(err.message || 'Login failed');
       } finally {
@@ -152,4 +152,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Login;*/

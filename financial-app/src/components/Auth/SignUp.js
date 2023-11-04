@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+/*import React, { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -58,49 +58,76 @@ const Message = styled.p`
 `;
 
 const SignUp = () => {
-  const [userData, setUserData] = useState({
+  const [formData, setFormData] = useState({
     username: '',
     email: '',
-    password: '',
+    password: ''
   });
-  const [message, setMessage] = useState('');
+  const [isSignedUp, setIsSignedUp] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setMessage('');
+    setError('');
+
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/signup`, userData);
-      setMessage(response.data.message || 'Registration successful!');
+      const response = await axios.post(`${process.env.Users_API}/signup`, formData);
+      if (response.status === 201) {
+        setIsSignedUp(true);
+        setMessage('User created successfully. Please check your email to verify your account.');
+      }
     } catch (error) {
-      setMessage(error.response?.data?.message || 'Registration failed');
+      console.error("Sign up error:", error.response ? error.response.data.error : error.message);
+      if (error.response && error.response.status === 409) {
+        setError(error.response.data.error);
+      } else {
+        setError('An unexpected error occurred');
+      }
     }
   };
 
   return (
     <SignUpContainer>
-      <SignUpForm onSubmit={handleSubmit}>
-        <Title>Sign Up</Title>
-        <label>
-          Username:
-          <Input type="text" name="username" value={userData.username} onChange={handleChange} required />
-        </label>
-        <label>
-          Email:
-          <Input type="email" name="email" value={userData.email} onChange={handleChange} required />
-        </label>
-        <label>
-          Password:
-          <Input type="password" name="password" value={userData.password} onChange={handleChange} required />
-        </label>
-        <Button type="submit">Sign Up</Button>
-      </SignUpForm>
-      {message && <Message>{message}</Message>}
+      {!isSignedUp ? (
+        <SignUpForm onSubmit={handleSubmit}>
+          <Title>Sign Up</Title>
+          <Input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            placeholder="Username"
+          />
+          <Input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+          />
+          <Input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+          />
+          <Button type="submit">Sign Up</Button>
+        </SignUpForm>
+      ) : (
+        <Message>{message}</Message>
+      )}
+      {error && <Message style={{ borderColor: '#f5c6cb', backgroundColor: '#f8d7da' }}>{error}</Message>}
     </SignUpContainer>
   );
 };
 
-export default SignUp;
+//export default SignUp;*/
