@@ -1,64 +1,52 @@
 import React, { useEffect, useState } from 'react';
-import StyledForm from '../StyledForm';  
-import styled from 'styled-components';
-import FinancialService from '../../Services/FinancialService';
-import ExpenseDistributionChart from './ExpenseDistributionChart';
-import FinancialSummary from './FinancialSummary';
-import FinancialInsights from './FinancialInsights';
-import RecentTransactions from './RecentTransactions';
-
-
-const DashboardContainer = styled.div`
-  padding: 20px;
-  font-family: 'Arial', sans-serif;
-  background-color: #f9f9f9; 
-`;
-
-const Title = styled.h1`
-  font-size: 2em;
-  color: ${props => props.theme.colors.primary};
-  margin-bottom: 20px;
-`;
-
+import axios from 'axios';
+import MonthlySpendingReport from './MonthlySpendingReport';
+//import AnnualSpendingTrends from './AnnualSpendingTrends';
+import BudgetComparisonReport from './BudgetComparisonReport';
 
 const Dashboard = () => {
-  const [financialData, setFinancialData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
- 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const summary = await FinancialService.getFinancialSummary();
-        const transactions = await FinancialService.getRecentTransactions();
-        //const goals = await FinancialService.getFinancialGoals();
+  const [monthlySpending, setMonthlySpending] = useState([]);
+  //const [annualSpending, setAnnualSpending] = useState([]);
+  const [budgetComparison, setBudgetComparison] = useState([]);
+  
+  
+  // Define the budget state here
+  const [budget, /*setBudget*/] = useState({
+    // Replace these with actual category and budget values
+    "Groceries": 500,
+    "Utilities": 150,
+    // Add other categories and their budget limits
+  });
 
-        setFinancialData({ summary, transactions });
-        setLoading(false);
+  // Placeholder function to use setBudget
+  /*const updateBudget = async (newBudgetValues) => {
+
+    setBudget(newBudgetValues);
+  };*/
+
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await axios.get('/api/dashboard'); 
+        setMonthlySpending(response.data.monthlySpending);
+        //setAnnualSpending(response.data.annualSpending);
+        setBudgetComparison(response.data.budgetComparison);
       } catch (error) {
-        setError('Failed to fetch financial data');
-        setLoading(false);
+        console.error('Error fetching dashboard data:', error);
       }
     };
 
-    fetchData();
+    fetchDashboardData();
   }, []);
 
-  if (loading) return <DashboardContainer>Loading...</DashboardContainer>;
-  if (error) return <DashboardContainer>Error: {error}</DashboardContainer>;
-
-  const expenseData = financialData.summary.expenses;
-
   return (
-    <DashboardContainer>
-      <Title>Dashboard</Title>
-      <FinancialSummary data={financialData.summary} />
-      <FinancialInsights data={financialData.summary} />
-      <RecentTransactions data={financialData.transactions} />
-      <ExpenseDistributionChart data={expenseData} />
-      <StyledForm />
-  
-    </DashboardContainer>
+    <div>
+      <h1>Dashboard</h1>
+      <MonthlySpendingReport data={monthlySpending} />
+
+      <BudgetComparisonReport data={budgetComparison} budget={budget} />
+    </div>
   );
 };
 

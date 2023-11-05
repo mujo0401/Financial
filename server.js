@@ -1,13 +1,12 @@
-
 import express from 'express';
 import multer from 'multer';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import fileRoute from './routes/fileRoute.js'; // Ensure this path is correct
+import fileRoute from './routes/fileRoute.js';
+import dashboardRoute from './routes/dashboardRoute.js';
 import { parseExcelFile } from './utils/fileParser.js';
-
-
+import { getMonthlySpending, getAnnualSpending, getBudgetComparison } from './controllers/dashboardController.js';
 
 dotenv.config();
 
@@ -25,16 +24,17 @@ const connectDB = async () => {
     console.log('Connected to MongoDB');
   } catch (err) {
     console.error(`Could not connect to MongoDB: ${err}`);
+    process.exit(1); // Exit the process with failure
   }
 };
 
 connectDB();
 
 app.get('/api', (_req, res) => {
+  console.log('Home route hit');
   res.send('API is running');
 });
 
-// Multer configuration for file storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/') // Make sure this uploads directory exists
@@ -47,64 +47,64 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// TODO: Define Mongoose schemas and models (models.js)
+app.post('/api/upload', upload.array('files', 10), async (req, res, next) => {
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).send('No files uploaded.');
+  }
 
-// Handle file upload route
-app.post('/api/upload', upload.array('files', 5), async (req, res) => {
+  let data = [];
+  let errors = [];
+
+  for (const file of req.files) {
+    try {
+      if (file.mimetype.includes('excel') || file.mimetype.includes('spreadsheetml')) {
+        const parsedData = await parseExcelFile(file.path);
+        data.push({ file: file.originalname, content: parsedData });
+      } else {
+        errors.push(`The file ${file.originalname} is an unsupported file type.`);
+      }
+    } catch (error) {
+      errors.push(`The file ${file.originalname} could not be processed: ${error.message}`);
+    }
+  }
+
+  res.status(200).json({ data, errors });
+});
+
+app.use('/api/files', fileRoute);
+
+app.use('/api/dashboard', dashboardRoute);
+
+// Dashboard route
+app.get('/api/dashboard', async (req, res, next) => {
+  console.log('Dashboard route hit'); 
   try {
-    if (!req.files) {
-      res.status(400).send('No files were uploaded.');
-      return;
-    }
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+    const endOfYear = new Date(now.getFullYear(), 11, 31);
 
-    // Process the file based on its mimetype
-    if (file.mimetype.includes('excel') || file.mimetype.includes('spreadsheetml')) {
-      data = await parseExcelFile(file.path);
-    } else if (file.mimetype === 'application/pdf') {
-      data = await parsePDFFile(file.path);
-    } else {
-      return res.status(400).send('Unsupported file type');
-    }
-
-    // TODO: Insert the data into MongoDB
-    // For now, just send back the data as a response
-    res.status(200).json(data);
+    const reports = {
+      monthlySpending: await getMonthlySpending(startOfMonth, endOfMonth),
+      annualSpending: await getAnnualSpending(startOfYear, endOfYear),
+      budgetComparison: await getBudgetComparison()
+    };
+    res.json(reports);
   } catch (error) {
-    res.status(500).send('Server error: ' + error.message);
+    next(error);
   }
 });
 
+// Error handling middleware
 app.use((error, req, res, next) => {
-  console.error(error.stack); // Log the stack trace for debugging
-  res.status(500).send('Something broke!');
+  console.error(error.stack);
+  const statusCode = error.statusCode || 500;
+  const message = error.message || 'Internal Server Error';
+  res.status(statusCode).send({ error: message });
 });
 
-
-/*app.post('/api/users/signup', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-
-    const existingUser = await userSchema.findOne({ email });
-    if (existingUser) {
-      return res.status(409).send({ error: 'User with the given email already exists.' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = new user({ username, email, password: hashedPassword });
-    await user.save();
-
-    res.status(201).send({ message: 'User created successfully' });
-  } catch (error) {
-    console.error(error);mujo0401multererror: Unexpected field at wrappedFileFilter (C:\repo\Financial\node_modules\multer\index.js:40:19) at Multipart. (C:\repo\Financial\node_modules\multer\lib\make-middleware.js:107:7) at Multipart.emit (node:events:515:28) at HeaderParser.cb (C:\repo\Financial\node_modules\busboy\lib\types\multipart.js:358:14) at HeaderParser.push (C:\repo\Financial\node_modules\busboy\lib\types\multipart.js:162:20) at SBMH.ssCb [as _cb] (C:\repo\Financial\node_modules\busboy\lib\types\multipart.js:394:37) at feed (C:\repo\Financial\node_modules\streamsearch\lib\sbmh.js:219:14) at SBMH.push (C:\repo\Financial\node_modules\streamsearch\lib\sbmh.js:104:16) at Multipart._write (C:\repo\Financial\node_modules\busboy\lib\types\multipart.js:567:19) at writeOrBuffer (node:internal/streams/writable:556:12)GitHub CopilotThe error message "MulterError: Unexpected field" typically occurs when the field name specified in your multer middleware does not match the field name in your form data.In your server-side code, you might have something like this:In this case, multer is expecting a file in the 'file' field of the form data.If your client-side code is sending the file under a different field name, you will get the "Unexpected field" error. For example, if your client-side code looks like this:You will get the "Unexpected field" error because multer is expecting the field name to be 'file', but it's actually 'files'.To fix this issue, you need to make sure that the field name specified in your multer middleware matches the field name in your form data. So either change the server-side code to:Or change the client-side code to:This should resolve the "MulterError: Unexpected field" error.
-    res.status(500).send({ error: 'Internal server error' });
-  }
-});*/
-
-app.use('/api/', fileRoute);
-
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-export default app;

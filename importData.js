@@ -7,27 +7,37 @@ export async function parseExcelFile(filePath) {
   const transactions = rows.slice(12).map((row) => {
     // Process the row to fit your transaction schema
     const description = row[2]; // Assuming Description is in column C
-    const amount = row[3];      // Assuming Amount is in column D
-    const category = categorizeTransaction(description);
+    
+const rawAmount = row[3]; // Raw value from the Excel file, column D
+const amount = parseFloat(rawAmount); // Attempt to convert to a float
 
-    // Create a transaction instance (don't save yet)
-    return new Transaction({
-      description,
-      amount,
-      category,
-    });
-  });
+if (isNaN(amount)) {
+  // Check if the conversion was successful
+  console.error(`Error: Invalid amount for transaction with description: ${description}`);
+  return null;
+}
 
-  // Save all transactions to the database
-  await Transaction.insertMany(transactions.map(t => t.toObject()));
+// If the amount is valid, proceed with creating the transaction object
+const category = categorizeTransaction(description);
 
-  // Return the processed transactions
-  return transactions;
+// Create a transaction instance (don't save yet)
+return new Transaction({
+  description,
+  amount,
+  category,
+  date: new Date(), // Sets to current date and time
+});
+});
+
+// Save all transactions to the database
+await Transaction.insertMany(transactions);
+
+// Return the processed transactions
+return transactions;
 }
 
 // Helper function to categorize transactions
 function categorizeTransaction(description) {
-  // Implement your categorization logic here
-  // ...
+// Implement your categorization logic here
+// ...
 }
-WS

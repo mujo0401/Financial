@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import GlobalBanner from './components/GlobalBanner';
 import Home from './components/Menu/Home';
 import Dashboard from './components/Dashboard/Dashboard';
+import ErrorBoundary from './components/Dashboard/ErrorBoundary'; 
 //import Login from './components/Auth/Login';
 //import SignUp from './components/Auth/SignUp';
 import UploadPage from './components/UploadPage';
@@ -25,9 +26,21 @@ function App() {
       <Router>
         <GlobalBanner />   
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/FileUpload" element={<UploadPage />} />
-          <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/" element={
+            <ErrorBoundary>
+              <Home />
+            </ErrorBoundary>
+          } />
+          <Route path="/FileUpload" element={
+            <ErrorBoundary>
+              <UploadPage />
+            </ErrorBoundary>
+          } />
+          <Route path="/Dashboard" element={
+            <ErrorBoundary>
+              <Dashboard />
+            </ErrorBoundary>
+          } />
         </Routes>
       </Router>
     </ThemeProvider>

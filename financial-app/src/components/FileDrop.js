@@ -2,62 +2,104 @@ import axios from 'axios';
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import moment from 'moment';
-import FileTable from './FileTable'; // Assuming this component exists
+import { DeleteButton, ProcessButton } from '../theme/GlobalTheme'; // Adjust the import path as necessary
 
 const FileDrop = () => {
   const [files, setFiles] = useState([]);
+  const [fileHashes, setFileHashes] = useState(new Set());
   const [duplicateFiles, setDuplicateFiles] = useState([]);
+  const [uploadMessage, setUploadMessage] = useState('');
+  const [uploadError, setUploadError] = useState('');
+  const [actualFiles, setActualFiles] = useState([]);  
 
-  const isDuplicate = useCallback((newFile) => {
-    return files.some(file => file.name === newFile.name);
-  }, [files]);
+  const buttonStyle = {
+    padding: '10px 20px',
+    margin: '5px',
+    borderRadius: '5px',
+    border: 'none',
+    cursor: 'pointer',
+  };
 
-  const onDrop = (acceptedFiles) => {
+  const deleteButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#ff4d4d', // Red color for delete button
+    color: 'white',
+  };
+
+  const processButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#4CAF50', // Green color for process button
+    color: 'white',
+  };
+
+  const getFileHash = async (file) => {
+    const arrayBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  };
+
+  const onDrop = useCallback(async (acceptedFiles) => {
     const newFiles = [];
     const duplicates = [];
-
-    acceptedFiles.forEach((file) => {
-      if (!isDuplicate(file)) {
+    const newActualFiles = []; // Temporary array to hold new files
+  
+    for (const file of acceptedFiles) {
+      const fileHash = await getFileHash(file);
+      if (!fileHashes.has(fileHash)) {
+        setFileHashes(prevHashes => new Set([...prevHashes, fileHash]));
+        newActualFiles.push(file); // Add to temporary array
         newFiles.push({
           name: file.name,
           timestamp: moment().format('YYYY-MM-DD HH:mm:ss'),
-          url: URL.createObjectURL(file)
+          hash: fileHash,
         });
       } else {
         duplicates.push(file.name);
       }
-    });
-
+    }
+  
     if (newFiles.length > 0) {
       setFiles(currFiles => [...currFiles, ...newFiles]);
+      setActualFiles(currFiles => [...currFiles, ...newActualFiles]); // Update the actualFiles state
     }
     if (duplicates.length > 0) {
       setDuplicateFiles(duplicates);
-      // Here you can notify the user that duplicate files were not added
     }
-  };
-
+  
+  }, [fileHashes]); 
   const processAndVisualizeFiles = async () => {
     try {
       // Create a FormData object to hold the files
       const formData = new FormData();
-      files.forEach((file) => {
-        formData.append('files', file);
+      actualFiles.forEach((file, index) => {
+        formData.append(`files`, file); // Use the same field name for all files
       });
   
-      // Send the files to the server
-      const response = await axios.post('/api/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      try {
+        const response = await axios.post('/api/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
   
-      // Handle the response, update the state to include the processed data
-      console.log('Processed Data:', response.data);
+        console.log(response.data);
+        setUploadMessage('Files uploaded successfully!');
+        setUploadError('');  // Clear any previous errors
+      } catch (error) {
+        setUploadError('Failed to upload files.');
+      setUploadMessage('');  // Clear any previous success message
+      // Handle the error
+        console.error(error.response ? error.response.data : error.message);
+      }
     } catch (error) {
-      console.error('Error processing files:', error);
+      setUploadError('Failed to upload files.');
+      setUploadMessage('');  // Clear any previous success message
+      // Handle the error
+      console.error(error);
     }
   };
+  
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -77,14 +119,34 @@ const FileDrop = () => {
     cursor: 'pointer',
   });
 
+  const deleteFile = (fileHash) => {
+    // Remove the file from the files state based on its hash
+    setFiles(currentFiles => currentFiles.filter(file => file.hash !== fileHash));
+    // Remove the file from the actualFiles state based on its hash
+    setActualFiles(currentFiles => currentFiles.filter(async file => {
+      const hash = await getFileHash(file); // Assuming getFileHash is a synchronous function
+      return hash !== fileHash;
+    }));
+    // Also, remove the hash from the set of file hashes
+    setFileHashes(currentHashes => {
+      const newHashes = new Set([...currentHashes]);
+      newHashes.delete(fileHash);
+      return newHashes;
+    });
+  };
+
   return (
     <div>
+      {uploadMessage && <div className="success-message">{uploadMessage}</div>}
+      {uploadError && <div className="error-message">{uploadError}</div>}
+
       <div {...getRootProps()} style={getStyle()}>
         <input {...getInputProps()} />
         <p>Drag 'n' drop some PDF or Excel files here, or click to select files</p>
       </div>
+
       {duplicateFiles.length > 0 && (
-        <div>
+        <div className="duplicate-files">
           <p>The following files were not added because they are duplicates:</p>
           <ul>
             {duplicateFiles.map((fileName, index) => (
@@ -93,16 +155,40 @@ const FileDrop = () => {
           </ul>
         </div>
       )}
-      {files.length > 0 && <FileTable files={files} />}
-      <>
-      <FileTable files={files} />
-          <button onClick={processAndVisualizeFiles}>Process and Visualize</button>
-      </>
-      
+
+      {files.length > 0 && (
+        <div className="uploaded-files">
+          <h3>Uploaded Files:</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th>Timestamp</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {files.map(file => (
+                <tr key={file.hash}>
+                  <td>{file.name}</td>
+                  <td>{file.timestamp}</td>
+                  <td>
+                  <DeleteButton style={deleteButtonStyle} onClick={() => deleteFile(file.hash)}>
+                    Delete
+                  </DeleteButton>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <ProcessButton  style={processButtonStyle} onClick={processAndVisualizeFiles}>
+        Process and Visualize
+      </ProcessButton >
     </div>
   );
 };
-
-
 
 export default FileDrop;
