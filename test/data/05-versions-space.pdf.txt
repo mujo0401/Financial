@@ -1,0 +1,92 @@
+
+
+14985 Glazier Avenue
+Apple Valley, MN 55124
+1 800 692-2274
+wingsfinancial.com
+Statement of Account 
+Tray1
+WingsIDNumber
+StatementPeriodPage
+09/08/23- 10/07/23
+1365309
+136530907Oct23JOSEPH MMURPHY
+STMT
+1 of 2
+1
+ACCOUNT TOTALS
+Total Savings Balance$6,731.99
+Total Checking Balance$5,891.42
+SHARE SAVINGS700169214
+Beginning BalanceDebits / WithdrawalsCredits / DepositsDividend PaidEnding BalanceDividend RateYTD Dividends
+$ 1,330.05$ 0.00$ 0.00$ 0.31$ 1,330.36.150%$ 0.31
+DateDepositWithdrawalBalanceDescription
+09/08$ 1,330.05Beginning Balance
+09/300.311,330.36Dividend Paid
+Dividend Period: 7/01/23 to 9/30/23
+Avg Daily Ledger Bal 808.79
+*Annual Percentage Yield Earned* 0.15
+10/07$ 1,330.36Ending Balance
+This PeriodYear-to-Date
+TOTAL OVERDRAFT FEES
+$ 0.00$ 0.00
+TOTAL RETURNED ITEMFEES
+$ 0.00$ 30.00
+PERSONAL CHECKING9110024172Joe Murphy
+Beginning BalanceDebits / WithdrawalsCredits / DepositsDividend PaidEnding BalanceDividend RateYTD Dividends
+$ 4,210.33$ 2,583.68$ 4,264.73$ 0.04$ 5,891.42.010%$ 0.07
+DateDepositWithdrawalBalanceDescription
+09/08$ 4,210.33Beginning Balance
+09/11-395.863,814.47DISCOVER E-PAYMENT
+09/13-98.433,716.04XCEL ENERGY-MN XCELENERGY
+09/152,049.345,765.38OLD REPUBLIC TTL PAYROLL
+09/1671.005,836.38Mobile Deposit65206293
+09/18-25.005,811.38DBT Purchase 0111 GREAT CLI 0111 GREAT CLIPS A SAINT LOUIS P MN Seq#00058035
+Date 9/16/23 Time 14:06
+09/18-4.295,807.09DBT Purchase Nintendo CD105 Nintendo CD1056967 800-2553700 WA Seq#00000682 Date
+9/18/23 Time 22:46
+09/18-683.655,123.44DISCOVER E-PAYMENT
+09/20-146.354,977.09DBT Purchase MAINSTREAM BOT MAINSTREAM BOTANIC 763-688-2799 WI
+Seq#00080299 Date 9/19/23 Time 22:58
+09/23-1,075.243,901.85DBT Purchase DicksSportingG DicksSportingGoods Coraopolis PA Seq#00036872 Date
+9/23/23 Time 17:04
+09/25-53.753,848.10DBT Purchase DicksSportingG DicksSportingGoods Coraopolis PA Seq#00037872 Date
+9/24/23 Time 09:40
+09/25-23.643,824.46DBT Purchase MICRO CENTER # MICRO CENTER #045 ST LOUIS PARK MN
+Seq#00073605 Date 9/23/23 Time 13:32
+JOSEPH M MURPHY
+1045 HIAWATHA AVE S # 109
+HOPKINS MN 55343-8141
+
+Statement of Account
+WingsIDNumber
+StatementPeriodPage
+09/08/23- 10/07/23
+1365309
+JOSEPH MMURPHY07Oct231365309
+STMT
+2 of 2
+PERSONAL CHECKING9110024172(Continued)
+DateDepositWithdrawalBalanceDescription
+09/28-21.113,803.35DBT Purchase OLIVE GARDEN Z OLIVE GARDEN ZK 00 MINNETONKA MN Seq#00023930
+Date 9/27/23 Time 21:16
+09/292,144.395,947.74OLD REPUBLIC TTL PAYROLL
+09/29-12.955,934.79DBT Purchase GOOGLE *Strava GOOGLE *Strava Inc g.co/helppay# CA Seq#00035535
+Date 9/29/23 Time 05:47
+09/300.045,934.83Dividend Credited Deposit
+Dividend Period: 9/01/23 to 9/30/23
+Avg Daily Ledger Bal 4,730.22
+*Annual Percentage Yield Earned 0.01
+10/04-43.415,891.42DBT Recur-Purch SLING.COM SLING.COM 888-363-1777 CO Seq#00018903 Date 10/04/23
+Time 04:19
+10/07$ 5,891.42Ending Balance
+INVESTMENT MONEY MARKET700418515
+Beginning BalanceDebits / WithdrawalsCredits / DepositsDividend PaidEnding BalanceDividend RateYTD Dividends
+$ 5,400.96$ 0.00$ 0.00$ 0.67$ 5,401.63.150%$ 1.63
+DateDepositWithdrawalBalanceDescription
+09/08$ 5,400.96Beginning Balance
+09/300.675,401.63Dividend Paid
+Dividend Period: 9/01/23 to 9/30/23
+Avg Daily Ledger Bal 5,400.96
+*Annual Percentage Yield Earned 0.15
+10/07$ 5,401.63Ending Balance
