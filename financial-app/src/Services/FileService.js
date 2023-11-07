@@ -5,9 +5,9 @@ const FileHandling = {
   uploadFile: async function(file) {
     try {
       const formData = new FormData();
-      formData.append('files', file);
+      formData.append('file', file);
 
-      const response = await axios.post(`/files`, formData, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('token')}`

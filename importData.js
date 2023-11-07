@@ -40,4 +40,4 @@ return transactions;
 function categorizeTransaction(description) {
 // Implement your categorization logic here
 // ...
-}proceed
+}

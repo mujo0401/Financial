@@ -1,6 +1,7 @@
 //App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import GlobalBanner from './components/GlobalBanner';
 import Home from './components/Menu/Home';
 import Dashboard from './components/Dashboard/Dashboard';
 import ErrorBoundary from './components/Dashboard/ErrorBoundary'; 
@@ -8,27 +9,34 @@ import ErrorBoundary from './components/Dashboard/ErrorBoundary';
 //import SignUp from './components/Auth/SignUp';
 import UploadPage from './components/UploadPage';
 import { ThemeProvider } from 'styled-components';
-import { theme, GlobalStyle } from './theme/GlobalTheme';
-import GlobalBanner from './theme/GlobalBanner';
+
+const theme = {
+  colors: {
+    primary: '#89CFF0',
+    secondary: '#A3E4D7',
+    accent: '#FFD700',
+    text: '#333',
+    background: '#f9f9f9',
+  },
+};
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <Router>  
-        <GlobalBanner /> 
+      <Router>
+        <GlobalBanner />   
         <Routes>
           <Route path="/" element={
             <ErrorBoundary>
               <Home />
             </ErrorBoundary>
           } />
-          <Route path="/upload" element={
+          <Route path="/FileUpload" element={
             <ErrorBoundary>
               <UploadPage />
             </ErrorBoundary>
           } />
-          <Route path="/dashboard" element={
+          <Route path="/Dashboard" element={
             <ErrorBoundary>
               <Dashboard />
             </ErrorBoundary>
@@ -38,4 +46,5 @@ function App() {
     </ThemeProvider>
   );
 }
+
 export default App;

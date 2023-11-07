@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import moment from 'moment';
-import { DeleteButton, ProcessButton } from '../theme/GlobalTheme'; 
+import { DeleteButton, ProcessButton } from '../theme/GlobalTheme'; // Adjust the import path as necessary
 
 const FileDrop = () => {
   const [files, setFiles] = useState([]);
@@ -11,31 +11,6 @@ const FileDrop = () => {
   const [uploadMessage, setUploadMessage] = useState('');
   const [uploadError, setUploadError] = useState('');
   const [actualFiles, setActualFiles] = useState([]);  
-
-  const styles = {
-    table: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      marginTop: '20px',
-    },
-    th: {
-      textAlign: 'left',
-      backgroundColor: '#f4f4f4',
-      padding: '8px',
-      border: '1px solid #ddd',
-    },
-    td: {
-      textAlign: 'left',
-      padding: '8px',
-      border: '1px solid #ddd',
-    },
-    trEven: {
-      backgroundColor: '#f9f9f9',
-    },
-    trOdd: {
-      backgroundColor: '#ffffff',
-    },
-  };
 
   const buttonStyle = {
     padding: '10px 20px',
@@ -47,13 +22,13 @@ const FileDrop = () => {
 
   const deleteButtonStyle = {
     ...buttonStyle,
-    backgroundColor: '#ff4d4d', 
+    backgroundColor: '#ff4d4d', // Red color for delete button
     color: 'white',
   };
 
   const processButtonStyle = {
     ...buttonStyle,
-    backgroundColor: '#4CAF50', 
+    backgroundColor: '#4CAF50', // Green color for process button
     color: 'white',
   };
 
@@ -67,7 +42,7 @@ const FileDrop = () => {
   const onDrop = useCallback(async (acceptedFiles) => {
     const newFiles = [];
     const duplicates = [];
-    const newActualFiles = []; 
+    const newActualFiles = []; // Temporary array to hold new files
   
     for (const file of acceptedFiles) {
       const fileHash = await getFileHash(file);
@@ -182,25 +157,25 @@ const FileDrop = () => {
       )}
 
       {files.length > 0 && (
-       <div className="uploaded-files">
-       <h3>Uploaded Files:</h3>
-       <table style={styles.table}>
-         <thead>
-           <tr>
-             <th style={styles.th}>File Name</th>
-             <th style={styles.th}>Timestamp</th>
-             <th style={styles.th}>Actions</th>
-           </tr>
-         </thead>
-         <tbody>
-           {files.map((file, index) => (
-             <tr key={file.hash} style={index % 2 === 0 ? styles.trEven : styles.trOdd}>
-               <td style={styles.td}>{file.name}</td>
-               <td style={styles.td}>{file.timestamp}</td>
-               <td style={styles.td}>
-                 <DeleteButton style={deleteButtonStyle} onClick={() => deleteFile(file.hash)}>
-                   Delete
-                 </DeleteButton>
+        <div className="uploaded-files">
+          <h3>Uploaded Files:</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>File Name</th>
+                <th>Timestamp</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {files.map(file => (
+                <tr key={file.hash}>
+                  <td>{file.name}</td>
+                  <td>{file.timestamp}</td>
+                  <td>
+                  <DeleteButton style={deleteButtonStyle} onClick={() => deleteFile(file.hash)}>
+                    Delete
+                  </DeleteButton>
                   </td>
                 </tr>
               ))}

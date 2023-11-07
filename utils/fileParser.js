@@ -1,17 +1,15 @@
 
 
+// In fileParser.js
 import fs from 'fs';
 //import pdfParse from 'pdf-parse';
 import readXlsxFile from 'read-excel-file/node';
 import Transaction from '../models/transactionModel.js'; // This should be your Mongoose model
-/*import { filePath } from 'url';
-
-filePath = "C:\\repo\\Financial\\uploads"
 
 
 
-//Check if the file exists before trying to read it
-if (fs.existsSync(filePath)) {
+// Check if the file exists before trying to read it
+/*if (fs.existsSync(filePath)) {
   // File exists, safe to proceed
   const data = fs.readFileSync(filePath);
   // rest of your code

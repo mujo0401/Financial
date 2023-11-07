@@ -1,7 +1,6 @@
 import express from 'express';
 import multer from 'multer';
 import mongoose from 'mongoose';
-import request from 'supertest';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import fileRoute from './routes/fileRoute.js';
@@ -46,15 +45,7 @@ const storage = multer.diskStorage({
   }
 });
 
-describe('GET /api/upload', () => {
-  it('responds with status 200', async () => {
-    const response = await request(app).get('/api/upload');
-    console.log(response); // This will log the entire response object
-    expect(response.statusCode).toBe(200);
-  });
-});
-
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
 
 app.post('/api/upload', upload.array('files', 10), async (req, res, next) => {
   if (!req.files || req.files.length === 0) {
@@ -62,24 +53,17 @@ app.post('/api/upload', upload.array('files', 10), async (req, res, next) => {
   }
 
   let data = [];
-  let errors = []
+  let errors = [];
 
-for (const file of req.files) {
+  for (const file of req.files) {
     try {
       if (file.mimetype.includes('excel') || file.mimetype.includes('spreadsheetml')) {
-        // Parse and accumulate data
         const parsedData = await parseExcelFile(file.path);
         data.push({ file: file.originalname, content: parsedData });
-      } else if (file.mimetype === 'application/pdf') {
-        // Parse and accumulate data for PDF
-        const parsedData = await parsePDFFile(file.path); 
-        data.push({ file: file.originalname, content: parsedData });
       } else {
-        // Accumulate error message for unsupported file types
         errors.push(`The file ${file.originalname} is an unsupported file type.`);
       }
     } catch (error) {
-      // Accumulate error message for files that failed to process
       errors.push(`The file ${file.originalname} could not be processed: ${error.message}`);
     }
   }
@@ -89,7 +73,7 @@ for (const file of req.files) {
 
 app.use('/api/files', fileRoute);
 
-app.use('/dashboard', dashboardRoute);
+app.use('/api/dashboard', dashboardRoute);
 
 // Dashboard route
 app.get('/api/dashboard', async (req, res, next) => {
@@ -120,12 +104,7 @@ app.use((error, req, res, next) => {
   res.status(statusCode).send({ error: message });
 });
 
-// Export the app instance for testing
-export default app;
-
-// Start the server only if not required by a test file
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
