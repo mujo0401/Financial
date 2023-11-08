@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import moment from 'moment';
-import { DeleteButton, ProcessButton } from '../theme/GlobalTheme'; // Adjust the import path as necessary
+import { DeleteButton, ProcessButton } from '../theme/GlobalTheme.js'; // Adjust the import path as necessary
 
 const FileDrop = () => {
   const [files, setFiles] = useState([]);

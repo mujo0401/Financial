@@ -1,6 +1,6 @@
 // UploadPage.js
 import React from 'react';
-import FileDrop from '../components/FileDrop';
+import FileDrop from '../components/FileDrop.js';
 
 const UploadPage = () => {
   return (

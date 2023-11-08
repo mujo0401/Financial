@@ -48,6 +48,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.post('/api/upload', upload.array('files', 10), async (req, res, next) => {
+  console.log('upload route hit');
   if (!req.files || req.files.length === 0) {
     return res.status(400).send('No files uploaded.');
   }

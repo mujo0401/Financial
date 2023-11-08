@@ -1,4 +1,4 @@
-import Transaction from '../models/Transcation';
+import Transaction from '../models/transactionModel';
 
 exports.uploadCategorizedTransactions = async (req, res) => {
     try {

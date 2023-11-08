@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import MonthlySpendingReport from './MonthlySpendingReport';
+import MonthlySpendingReport from './MonthlySpendingReport.js';
 //import AnnualSpendingTrends from './AnnualSpendingTrends';
-import BudgetComparisonReport from './BudgetComparisonReport';
+import BudgetComparisonReport from './BudgetComparisonReport.js';
 
 const Dashboard = () => {
   const [monthlySpending, setMonthlySpending] = useState([]);

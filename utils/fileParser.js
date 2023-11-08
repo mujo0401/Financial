@@ -1,22 +1,6 @@
-
-
-// In fileParser.js
 import fs from 'fs';
-//import pdfParse from 'pdf-parse';
 import readXlsxFile from 'read-excel-file/node';
-import Transaction from '../models/transactionModel.js'; // This should be your Mongoose model
-
-
-
-// Check if the file exists before trying to read it
-/*if (fs.existsSync(filePath)) {
-  // File exists, safe to proceed
-  const data = fs.readFileSync(filePath);
-  // rest of your code
-} else {
-  // File does not exist, handle accordingly
-  console.log('File not found:', filePath);
-}*/
+import Transaction from '../models/transactionModel.js'; 
 
 // Category keywords mapping
 const categoryKeywords = {
@@ -37,106 +21,67 @@ const categoryKeywords = {
   "Gaming": ["STEAM"]
 };
 
-function normalizeAmount(deposit, withdrawal, amountWithoutSign) {
-  let amount = 0;
-  if (deposit) {
-    amount = parseFloat(deposit.replace(/\$|\s|,/g, ''));
-  } else if (withdrawal) {
-    amount = parseFloat(withdrawal.replace(/\$|\s|,/g, '')) * -1; // Multiply by -1 to make it negative
-  } else {
-    amount = parseFloat(amountWithoutSign.replace(/,/g, ''));
-  }
-  return amount;
-}
-
-function processTransactions(transactions) {
-  return transactions.map(transaction => {
-    const [date, deposit, withdrawal, amountWithoutSign, description] = transaction;
-    
-    // Normalize the amount
-    const amount = normalizeAmount(deposit, withdrawal, amountWithoutSign);
-
-    // Categorize the transaction
-    const category = categorizeTransaction(description);
-
-    // Prepare the transaction data for MongoDB insertion
-    return {
-      date,
-      amount,
-      description: description.trim(),
-      category
-    };
-  });
-}
-
-// Helper function to categorize transactions
-function categorizeTransaction(description) {
+// Function to assign a category based on description
+function assignCategory(description) {
   for (const [category, keywords] of Object.entries(categoryKeywords)) {
-    if (keywords.some(keyword => description.toUpperCase().includes(keyword.toUpperCase()))) {
+    if (keywords.some(keyword => description.includes(keyword))) {
       return category;
     }
   }
-  return 'Uncategorized';
+  return "Other"; // Default category if no keyword matches
 }
 
+// Function to process transactions and summarize data
+function processTransactions(transactions) {
+  const summary = {};
+
+  transactions.forEach(transaction => {
+    const category = assignCategory(transaction[2]); // Assuming description is in the 3rd column
+    if (!summary[category]) {
+      summary[category] = { Amount: 0, LatestDate: new Date(0) };
+    }
+    const amount = parseFloat(transaction[3]); // Assuming amount is in the 4th column
+    summary[category].Amount += isNaN(amount) ? 0 : amount;
+
+    const transDate = new Date(transaction[1]); // Assuming date is in the 2nd column
+    if (transDate > summary[category].LatestDate) {
+      summary[category].LatestDate = transDate;
+    }
+  });
+
+  return summary;
+}
+
+// Main function to parse Excel file and insert transactions
 export async function parseExcelFile(filePath) {
-  const rows = await readXlsxFile(filePath);
-  const transactions = rows.slice(12).map((row) => {
-    const description = row[2]; // Assuming the Description is in column C
-    const rawAmount = row[3]; // Assuming the Amount is in column D
-
-    // Skip header or any non-numeric rows
-    if (typeof rawAmount === 'string' && rawAmount.toUpperCase() === 'AMOUNT') {
-      return null; // This is a header row or a non-numeric row, return null to filter it out later
-    }
-    
-    const amount = parseFloat(rawAmount);
-    
-    // Validate the amount
-    if (isNaN(amount)) {
-      console.error(`Invalid amount '${rawAmount}' at row ${rows.indexOf(row) + 1}`);
-      return null; // Return null for invalid transactions
-    }
-    const category = categorizeTransaction(description);
-
-    return new Transaction({
-      description,
-      amount,
-      category,
-    });
-  }).filter(transaction => transaction !== null); // Remove invalid transactions
-
-  return transactions; // Return the valid transactions
-}
-
-// Function to parse PDF files
-export async function parsePdfFile(filePath) {
-  const buffer = fs.readFileSync(filePath);
-  const data = await pdfParse(buffer);
-  const textContent = data.text;
-
-  const rawTransactions = [...textContent.matchAll(transactionPattern)].map(match => ({
-    date: match[1],
-    deposit: match[2] || '',
-    withdrawal: match[3] || '',
-    amountWithoutSign: match[4] || '',
-    description: match[5].trim()
-  }));
-  
-  // Process and categorize the extracted transactions
-  const categorizedTransactions = processTransactions(rawTransactions);
-  
-  // Save categorized transactions to the database
-  for (const transaction of categorizedTransactions) {
-    try {
-      const dbTransaction = new Transaction(transaction);
-      await dbTransaction.save(); // This line needs to be in an async function
-    } catch (error) {
-      console.error(`Error saving transaction: ${error}`);
-    }
+  if (!fs.existsSync(filePath)) {
+    console.error('File not found:', filePath);
+    return [];
   }
-  
-  // Return something meaningful, like a summary or the actual categorized transactions
-  return categorizedTransactions;
+
+  const rows = await readXlsxFile(filePath);
+  const rawDataArray = rows.slice(12); // Skip the first 12 rows
+
+  const transactionsSummary = processTransactions(rawDataArray);
+  const transactionsToInsert = Object.entries(transactionsSummary).map(([category, data]) => ({
+    description: `Total for ${category}`,
+    amount: data.Amount,
+    category: category,
+    date: data.LatestDate
+  }));
+
+  if (transactionsToInsert.length > 0) {
+    try {
+      // Bulk insert the summarized transactions
+      const insertedTransactions = await Transaction.insertMany(transactionsToInsert);
+      console.log(`Successfully inserted ${insertedTransactions.length} transactions.`);
+      return insertedTransactions;
+    } catch (error) {
+      console.error('Failed to insert transactions:', error);
+      return [];
+    }
+  } else {
+    console.error('No valid transactions to insert');
+    return [];
+  }
 }
-  
