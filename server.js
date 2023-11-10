@@ -5,8 +5,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import fileRoute from './routes/fileRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
-import { parseExcelFile } from './utils/fileParser.js';
-import { getMonthlySpending, getAnnualSpending, getBudgetComparison } from './controllers/dashboardController.js';
+import { parseExcelFile } from './financial-app/src/components/utils/fileParser.js';
+import { getMonthlySpending } from './controllers/dashboardController.js';
 
 dotenv.config();
 
@@ -72,6 +72,9 @@ app.post('/api/upload', upload.array('files', 10), async (req, res, next) => {
   res.status(200).json({ data, errors });
 });
 
+
+
+
 app.use('/api/files', fileRoute);
 
 app.use('/api/dashboard', dashboardRoute);
@@ -83,13 +86,13 @@ app.get('/api/dashboard', async (req, res, next) => {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    const startOfYear = new Date(now.getFullYear(), 0, 1);
-    const endOfYear = new Date(now.getFullYear(), 11, 31);
+    //const startOfYear = new Date(now.getFullYear(), 0, 1);
+    //const endOfYear = new Date(now.getFullYear(), 11, 31);
 
     const reports = {
       monthlySpending: await getMonthlySpending(startOfMonth, endOfMonth),
-      annualSpending: await getAnnualSpending(startOfYear, endOfYear),
-      budgetComparison: await getBudgetComparison()
+      //annualSpending: await getAnnualSpending(startOfYear, endOfYear),
+      //budgetComparison: await getBudgetComparison()
     };
     res.json(reports);
   } catch (error) {
@@ -103,6 +106,26 @@ app.use((error, req, res, next) => {
   const statusCode = error.statusCode || 500;
   const message = error.message || 'Internal Server Error';
   res.status(statusCode).send({ error: message });
+});
+
+// Existing route for /api
+app.get('/api', (_req, res) => {
+  console.log('API route hit');
+  res.send('API is running');
+});
+
+// Existing route for /api/dashboard
+app.get('/api/dashboard', (_req, res) => {
+  console.log('Dashboard route hit');
+  res.send('API is running');
+});
+
+// Serve any static files
+app.use(express.static(path.join(__dirname, 'C:\repo\Financial')));
+
+// Handle React routing, return all requests to React app
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'C:\repo\Financial', 'index.html'));
 });
 
 // Start the server

@@ -1,4 +1,3 @@
-//Service/FioleService.js
 import axios from 'axios';
 
 const FileHandling = {

@@ -1,13 +1,11 @@
 //App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import GlobalBanner from './components/GlobalBanner.js';
-import Home from './components/Menu/Home.js';
-import Dashboard from './components/Dashboard/Dashboard.js';
-import ErrorBoundary from './components/Dashboard/ErrorBoundary.js'; 
-//import Login from './components/Auth/Login';
-//import SignUp from './components/Auth/SignUp';
-import UploadPage from './components/UploadPage.js';
+import GlobalBanner from './Design/GlobalBanner.js';
+import Home from './components/Pages/Home.js';
+import Dashboard from './components/Pages/Dashboard.js';
+import ErrorBoundary from './components/utils/ErrorBoundary.js'; 
+import FileImport from './components/Pages/FileImport.js';
 import { ThemeProvider } from 'styled-components';
 
 const theme = {
@@ -33,7 +31,7 @@ function App() {
           } />
           <Route path="/FileUpload" element={
             <ErrorBoundary>
-              <UploadPage />
+              <FileImport />
             </ErrorBoundary>
           } />
           <Route path="/Dashboard" element={

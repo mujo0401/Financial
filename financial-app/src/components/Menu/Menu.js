@@ -29,7 +29,7 @@ const Card = styled(Link)`
 function CardMenu() {
   return (
     <CardContainer>
-      <Card to="/FileUpload">Upload File</Card>
+      <Card to="/FileUpload">Procces File(s)</Card>
       <Card to="/Dashboard">Dashboard</Card>
     </CardContainer>
   );

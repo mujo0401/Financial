@@ -1,13 +1,13 @@
 import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import CardMenu  from './Menu/Menu.js'; 
-import Navigation from './Menu/Navigation.js';
-import { theme  } from '../theme/GlobalTheme.js';
+import CardMenu  from '../components/Menu/Menu.js'; 
+import Navigation from '../components/Menu/Navigation.js';
+import { theme  } from './GlobalTheme.js';
 const BannerContainer = styled.div`
   position: relative; // This will make the banner stretch across the top
   width: 100%; // Stretch across the width
   height: 200px; // Adjust this value according to your needs
-  background-color: ${props => props.theme.colors.primary};
+  background-color: #005f73;
   text-align: center;
   padding: 0;
   font-size: 20px;

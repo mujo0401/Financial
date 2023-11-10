@@ -1,6 +1,6 @@
 import fs from 'fs';
 import readXlsxFile from 'read-excel-file/node';
-import Transaction from '../models/transactionModel.js'; 
+import Transaction from '../../../../models/transactionModel.js';
 
 // Category keywords mapping
 const categoryKeywords = {

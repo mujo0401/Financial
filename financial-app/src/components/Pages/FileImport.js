@@ -1,8 +1,8 @@
 // UploadPage.js
 import React from 'react';
-import FileDrop from '../components/FileDrop.js';
+import FileDrop from '../utils/FileDrop.js';
 
-const UploadPage = () => {
+const FileImport = () => {
   return (
     <div>
       <h1>Upload Your Files</h1>
@@ -11,4 +11,4 @@ const UploadPage = () => {
   );
 };
 
-export default UploadPage;
+export default FileImport;
