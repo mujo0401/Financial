@@ -6,6 +6,7 @@ import Home from './components/Pages/Home.js';
 import Dashboard from './components/Pages/Dashboard.js';
 import ErrorBoundary from './components/utils/ErrorBoundary.js'; 
 import FileImport from './components/Pages/FileImport.js';
+import TransactionEntry from './components/Pages/TransactionEntry.js';
 import { ThemeProvider } from 'styled-components';
 
 const theme = {
@@ -37,6 +38,11 @@ function App() {
           <Route path="/Dashboard" element={
             <ErrorBoundary>
               <Dashboard />
+            </ErrorBoundary>
+          } />
+              <Route path="/TransactionEntry" element={
+            <ErrorBoundary>
+              <TransactionEntry />
             </ErrorBoundary>
           } />
         </Routes>

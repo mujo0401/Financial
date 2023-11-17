@@ -1,15 +1,15 @@
-//routes/FileRoute.js
 import express from 'express';
+import { deleteFile, getAllFiles, uploadFile }  from '.././controllers/fileController.js';
+
 const router = express.Router();
-import { uploadFile, deleteFile } from '.././controllers/fileController.js';
 
-router.post('/upload', (req, res, next) => {
-  console.log('Files:', req.files);
-  console.log('Body:', req.body);
-  next(); 
-}, uploadFile);
+// Route to get all files
+router.get('/', getAllFiles);
 
+// Route to upload a file
+router.post('/upload', uploadFile);
 
-router.delete('/delete/:fileId', deleteFile);
+// Route to delete a file
+router.delete('/:fileId', deleteFile);
 
 export default router;

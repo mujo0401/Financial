@@ -90,7 +90,7 @@ export const ProcessButton = styled.button`
 `;
 
 export const PageContainer = styled.div`
-background: url('background-image.jpg') no-repeat center center fixed;
+background: url(${colors.background}) no-repeat center center fixed;
 background-size: cover;
 `;
 
@@ -123,5 +123,41 @@ export const ActionButton = styled(Link)`
 
   &:hover {
     background-color: #45a049;
+  }
+`;
+
+// Styled Button
+export const Button = styled.button`
+  background-color: ${theme.colors.primary};
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: ${theme.colors.secondary};
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+// Styled Input
+export const Input = styled.input`
+  display: block;    
+  padding: 10px;
+  border: 2px solid ${theme.colors.secondary};
+  border-radius: 4px;
+  margin: 10px 0 10px 10px; 
+  width: 30%;         
+  box-sizing: border-box; 
+
+  &:focus {
+    border-color: ${theme.colors.primary};
+    outline: none;
   }
 `;

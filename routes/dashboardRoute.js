@@ -6,7 +6,7 @@ import { getMonthlySpending } from '../controllers/dashboardController.js';
 const router = express.Router();
 
 // Route to get dashboard data
-router.get('/api/dashboard', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);

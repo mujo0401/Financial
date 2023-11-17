@@ -3,7 +3,7 @@ import { GridFsStorage } from 'multer-gridfs-storage';
 import crypto from 'crypto';
 import path from 'path';
 import mongoose from 'mongoose';
-import { FileModel } from '../models/fileModel.js';
+import { File } from '../models/fileModel.js';
 import express from 'express';
 
 const app = express();
@@ -42,13 +42,20 @@ export const uploadFile = (req, res) => {
         size: f.size,
         // Add any other relevant metadata you want to store
       }));
-      FileModel.insertMany(fileData)
+      File.insertMany(fileData)
       .then(() => res.status(201).json({ message: 'Files uploaded and metadata saved.' }))
       .catch(error => res.status(500).json({ error: error.message }));
     });
   };
 
-
+  export const getAllFiles = async (req, res, next) => {
+    try {
+        const files = await FileModel.find();
+        res.json(files);
+    } catch (error) {
+        next(error);
+    }
+};
   
   export const deleteFile = (req, res) => {
     const file_id = req.params.fileId;

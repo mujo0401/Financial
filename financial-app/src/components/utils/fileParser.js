@@ -85,3 +85,6 @@ export async function parseExcelFile(filePath) {
     return [];
   }
 }
+
+export { assignCategory }
+

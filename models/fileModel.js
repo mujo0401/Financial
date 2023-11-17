@@ -9,7 +9,7 @@ const fileSchema = new mongoose.Schema({
 });
 
 // Create FileModel
-const FileModel = mongoose.model('File', fileSchema);
+const File = mongoose.model('File', fileSchema);
 
 // Schema for extracted data
 const dataSchema = new mongoose.Schema({
@@ -22,4 +22,4 @@ const dataSchema = new mongoose.Schema({
 const DataModel = mongoose.model('Data', dataSchema);
 
 // Export the mongoose models as named exports
-export { FileModel, DataModel };
+export { File, DataModel };

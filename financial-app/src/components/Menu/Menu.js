@@ -31,7 +31,7 @@ function CardMenu() {
     <CardContainer>
       <Card to= "/">Home</Card>
       <Card to="/FileUpload">Process Bank Statement(s)</Card>
-      <Card to="/">Transaction Entry</Card>
+      <Card to="/TransactionEntry">Transaction Entry</Card>
       <Card to="/Dashboard">Dashboard</Card> 
     </CardContainer>
   );
