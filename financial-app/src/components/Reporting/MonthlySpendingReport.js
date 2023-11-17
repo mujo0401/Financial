@@ -9,8 +9,8 @@ const MonthlySpendingReport = ({ data }) => {
       data={data}
       margin={{
         top: 5,
-        right: 30,
-        left: 20,
+        right: 40,
+        left: 10,
         bottom: 5,
       }}
     >
@@ -19,7 +19,7 @@ const MonthlySpendingReport = ({ data }) => {
       <YAxis />
       <Tooltip />
       <Legend />
-      <Bar dataKey="totalAmount" fill="#8884d8" />
+      <Bar dataKey="totalAmount" fill="#005f73" />
     </BarChart>
   );
 };

@@ -22,15 +22,17 @@ const Card = styled(Link)`
   color: ${props => props.theme.colors.text};
 
   &:hover {
-    background-color: ${props => props.theme.colors.accent};
+    background-color: #94d2bd;
   }
 `;
 
 function CardMenu() {
   return (
     <CardContainer>
-      <Card to="/FileUpload">Procces File(s)</Card>
-      <Card to="/Dashboard">Dashboard</Card>
+      <Card to= "/">Home</Card>
+      <Card to="/FileUpload">Process Bank Statement(s)</Card>
+      <Card to="/">Transaction Entry</Card>
+      <Card to="/Dashboard">Dashboard</Card> 
     </CardContainer>
   );
 }

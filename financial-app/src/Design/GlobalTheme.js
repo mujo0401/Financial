@@ -1,4 +1,5 @@
 import { styled, createGlobalStyle } from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const colors = {
   primary: '#005f73', // Green
@@ -6,7 +7,6 @@ const colors = {
   background: '#f0f4f8', // Light Grey
   text: '#333f48', // Almost Black
   border: '#cad2c5', // Light Grey Border
-  // Add any other colors you need
 };
 
 const typography = {
@@ -20,20 +20,17 @@ const typography = {
     fontSize: '1.5em',
     fontWeight: 'bold',
   },
-  // Define styles for other headings and text as needed
 };
 
 const buttons = {
   borderRadius: '2px',
   padding: '8px 16px',
-  // Add other button styles as needed
 };
 
 const inputs = {
   borderRadius: '2px',
   padding: '8px 12px',
   border: `1px solid ${colors.border}`,
-  // Add other input styles as needed
 };
 
 export const theme = {
@@ -49,30 +46,23 @@ export const theme = {
     buttons,
     inputs,
   },
-  // ... other theme properties
 };
 
 export const GlobalStyle = createGlobalStyle`
   body {
     margin: 0;
     padding: 0;
-    // ... other global styles
   }
 
-  // Define button styles here
   .delete-button {
     background-color: ${theme.colors.delete};
     color: white;
-    // ... other styles for delete button
   }
 
   .process-button {
     background-color: ${theme.colors.process};
     color: white;
-    // ... other styles for process button
   }
-
-  // ... other global styles
 `;
 
 export const DeleteButton = styled.button`
@@ -87,7 +77,6 @@ export const DeleteButton = styled.button`
   }
 `;
 
-// Styled button for the Process and Visualize action
 export const ProcessButton = styled.button`
   background-color: ${props => props.theme.colors.process};
   color: white;
@@ -97,5 +86,42 @@ export const ProcessButton = styled.button`
   cursor: pointer;
   &:hover {
     background-color: ${props => props.theme.colors.processHover};
+  }
+`;
+
+export const PageContainer = styled.div`
+background: url('background-image.jpg') no-repeat center center fixed;
+background-size: cover;
+`;
+
+export const WelcomeText = styled.h1`
+  font-size: 2.5em;
+  text-align: center;
+  margin-bottom: 20px;
+
+`;
+
+export const DescriptionText = styled.p`
+  max-width: 600px;
+  text-align: center;
+  font-size: 1.2em;
+  line-height: 1.5;
+  color: #666;
+`;
+
+export const ActionButton = styled(Link)`
+  display: inline-block;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #A3E4D7;
+  color: white;
+  font-size: 1em;
+  text-decoration: none;
+  text-align: center;
+
+  &:hover {
+    background-color: #45a049;
   }
 `;

@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import CardMenu  from '../components/Menu/Menu.js'; 
-import Navigation from '../components/Menu/Navigation.js';
 import { theme  } from './GlobalTheme.js';
 const BannerContainer = styled.div`
   position: relative; // This will make the banner stretch across the top
@@ -34,7 +33,6 @@ const GlobalBanner = () => {
       <BannerImage src={process.env.PUBLIC_URL + '/pictures/site_banner_image.jpg'} />
       <ButtonWrapper>
         <CardMenu />
-        <Navigation />
       </ButtonWrapper>
       </ThemeProvider>
     </BannerContainer>

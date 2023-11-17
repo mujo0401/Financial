@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import MonthlySpendingReport from '../Reporting/MonthlySpendingReport.js';
+//import { PageContainer} from '../../Design/GlobalTheme';
 
-const mockData = [
+/*const mockData = [
   { _id: 'Groceries', totalAmount: 400 },
   { _id: 'Utilities', totalAmount: 300 },
   { _id: 'Entertainment', totalAmount: 150 },
   { _id: 'Transport', totalAmount: 200 },
-];
+];*/
 
 const Dashboard = () => {
-  const [monthlySpending, setMonthlySpending] = useState(mockData);
+  const [monthlySpending, setMonthlySpending] = useState([]);
   //const [annualSpending, setAnnualSpending] = useState([]);
   //const [budgetComparison, setBudgetComparison] = useState([]);
 

@@ -45,9 +45,10 @@ const FileDrop = () => {
 
   const processButtonStyle = {
     ...buttonStyle,
-    backgroundColor: '#4CAF50', // Green color for process button
+    backgroundColor: '#005f73', // Green color for process button
     color: 'white',
   };
+  
 
   const getFileHash = async (file) => {
     const arrayBuffer = await file.arrayBuffer();

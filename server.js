@@ -2,8 +2,11 @@ import express from 'express';
 import multer from 'multer';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import { fileURLToPath  } from 'url';
+import path from 'path';
 import dotenv from 'dotenv';
 import fileRoute from './routes/fileRoute.js';
+import uploadRoute from './routes/uploadRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
 import { parseExcelFile } from './financial-app/src/components/utils/fileParser.js';
 import { getMonthlySpending } from './controllers/dashboardController.js';
@@ -13,6 +16,7 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/FinanceDB';
@@ -30,9 +34,16 @@ const connectDB = async () => {
 
 connectDB();
 
-app.get('/api', (_req, res) => {
-  console.log('Home route hit');
-  res.send('API is running');
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+app.use((error, req, res, next) => {
+  console.error(error.stack);
+  const statusCode = error.statusCode || 500;
+  const message = error.message || 'Internal Server Error';
+  res.status(statusCode).send({ error: message });
 });
 
 const storage = multer.diskStorage({
@@ -45,38 +56,11 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage: storage });
+const __dirname = path.dirname(fileURLToPath (import.meta.url));
 
-app.post('/api/upload', upload.array('files', 10), async (req, res, next) => {
-  console.log('upload route hit');
-  if (!req.files || req.files.length === 0) {
-    return res.status(400).send('No files uploaded.');
-  }
-
-  let data = [];
-  let errors = [];
-
-  for (const file of req.files) {
-    try {
-      if (file.mimetype.includes('excel') || file.mimetype.includes('spreadsheetml')) {
-        const parsedData = await parseExcelFile(file.path);
-        data.push({ file: file.originalname, content: parsedData });
-      } else {
-        errors.push(`The file ${file.originalname} is an unsupported file type.`);
-      }
-    } catch (error) {
-      errors.push(`The file ${file.originalname} could not be processed: ${error.message}`);
-    }
-  }
-
-  res.status(200).json({ data, errors });
-});
-
-
-
-
+app.use(express.static(path.join(__dirname, 'financial-app', 'public')));
 app.use('/api/files', fileRoute);
-
+app.use('/api/upload', uploadRoute);
 app.use('/api/dashboard', dashboardRoute);
 
 // Dashboard route
@@ -100,35 +84,35 @@ app.get('/api/dashboard', async (req, res, next) => {
   }
 });
 
-// Error handling middleware
-app.use((error, req, res, next) => {
-  console.error(error.stack);
-  const statusCode = error.statusCode || 500;
-  const message = error.message || 'Internal Server Error';
-  res.status(statusCode).send({ error: message });
-});
-
-// Existing route for /api
-app.get('/api', (_req, res) => {
-  console.log('API route hit');
-  res.send('API is running');
-});
-
-// Existing route for /api/dashboard
-app.get('/api/dashboard', (_req, res) => {
-  console.log('Dashboard route hit');
-  res.send('API is running');
-});
-
-// Serve any static files
-app.use(express.static(path.join(__dirname, 'C:\repo\Financial')));
+const upload = multer({ storage: storage });
 
 // Handle React routing, return all requests to React app
 app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, 'C:\repo\Financial', 'index.html'));
+  res.sendFile(path.join(__dirname, 'financial-app', 'public', 'index.html'));
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.post('/api/upload', upload.array('files', 10), async (req, res, next) => {
+  console.log('upload route hit');
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).send('No files uploaded.');
+  }
+
+  let data = [];
+  let errors = [];
+
+  for (const file of req.files) {
+    try {
+      if (file.mimetype.includes('excel') || file.mimetype.includes('spreadsheetml')) {
+        const parsedData = await parseExcelFile(file.path);
+        data.push({ file: file.originalname, content: parsedData });
+      } else {
+        errors.push(`The file ${file.originalname} is an unsupported file type.`);
+      }
+    } catch (error) {
+      errors.push(`The file ${file.originalname} could not be processed: ${error.message}`);
+    }
+  }
+  res.status(200).json({ data, errors });
 });
+
+export default { fileURLToPath }
