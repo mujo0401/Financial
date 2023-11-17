@@ -56,9 +56,10 @@ const storage = multer.diskStorage({
   }
 });
 
-const __dirname = path.dirname(fileURLToPath (import.meta.url));
 
-app.use(express.static(path.join(__dirname, 'financial-app', 'public')));
+
+app.use(express.static(path.join(__dirname, 'financial-app')));
+
 app.use('/api/files', fileRoute);
 app.use('/api/upload', uploadRoute);
 app.use('/api/dashboard', dashboardRoute);
@@ -87,13 +88,12 @@ app.get('/api/dashboard', async (req, res, next) => {
 const upload = multer({ storage: storage });
 
 // Handle React routing, return all requests to React app
-app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, 'financial-app', 'public', 'index.html'));
+app.get('/*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'financial-app', 'index.html'));
 });
 
 app.post('/api/upload', upload.array('files', 10), async (req, res, next) => {
-  console.log('upload route hit');
-  if (!req.files || req.files.length === 0) {
+ if (!req.files || req.files.length === 0) {
     return res.status(400).send('No files uploaded.');
   }
 

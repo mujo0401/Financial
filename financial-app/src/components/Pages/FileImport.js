@@ -1,13 +1,14 @@
 // UploadPage.js
 import React from 'react';
 import FileDrop from '../utils/FileDrop.js';
+import { PageContainer} from '../../Design/GlobalTheme';
 
 const FileImport = () => {
   return (
-    <div>
+    <PageContainer>
       <h1>Upload Your Files</h1>
       <FileDrop />
-    </div>
+    </PageContainer>
   );
 };
 

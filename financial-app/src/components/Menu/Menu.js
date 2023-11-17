@@ -19,7 +19,7 @@ const Card = styled(Link)`
   border-radius: 10px;
   cursor: pointer;
   text-decoration: none;
-  color: ${props => props.theme.colors.text};
+  color: ${props => props.theme.colors.primary};
 
   &:hover {
     background-color: #94d2bd;
