@@ -9,6 +9,8 @@ import fileRoute from './routes/fileRoute.js';
 import uploadRoute from './routes/uploadRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
 import transactionEntryRoute from './routes/transactionEntryRoute.js';
+import categoryRoute from './routes/descriptionRoute.js';
+import descriptionRoute from './routes/categoryRoute.js';
 
 dotenv.config();
 
@@ -55,13 +57,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Static file serving
-app.use(express.static(path.join(__dirname, 'financial-app')));
+app.use(express.static(path.join(__dirname, 'financial-app', 'public')));
 
 // Route definitions
 app.use('/api/files', fileRoute);
 app.use('/api/upload', uploadRoute);
 app.use('/api/dashboard', dashboardRoute);
 app.use('/api/transactionEntry', transactionEntryRoute);
+app.use('/api/categories', categoryRoute);
+app.use('/api/descriptions', descriptionRoute);
 
 // Start the server
 app.listen(PORT, () => {

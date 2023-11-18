@@ -1,8 +1,7 @@
-
-
 import express from 'express';
 import { parseExcelFile } from './../financial-app/src/components/utils/fileParser.js';
 import multer from 'multer';
+import path from 'path'
 
 const router = express.Router();
 
@@ -23,14 +22,14 @@ router.post('/', upload.array('files', 10), (req, res) => {
       return res.status(400).send({ message: 'No files uploaded.' });
   }
 
-
-  parseExcelFile(req.file.path)
-  .then(result => {
-      res.status(200).json(result);
-  })
-  .catch(error => {
-      res.status(500).send(error.message);
-  });
+  // Process each file using parseExcelFile
+  Promise.all(req.files.map(file => parseExcelFile(file.path)))
+    .then(results => {
+        res.status(200).json(results);
+    })
+    .catch(error => {
+        res.status(500).send({ message: error.message });
+    });
 });
 
 export default router;

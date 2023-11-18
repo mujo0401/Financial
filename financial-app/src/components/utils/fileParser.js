@@ -1,6 +1,8 @@
 import fs from 'fs';
 import readXlsxFile from 'read-excel-file/node';
-import Transaction from '../../../../models/transactionModel.js';
+import Transaction  from '../../../../models/transactionModel.js';
+import { Category }  from '../../../../models/categoryModel.js';
+import { Description }  from '../../../../models/descriptionModel.js';
 
 // Category keywords mapping
 const categoryKeywords = {
@@ -31,12 +33,22 @@ function assignCategory(description) {
   return "Other"; // Default category if no keyword matches
 }
 
+// Function to get or create a category and return its ID
+async function getCategoryId(categoryName) {
+  let categoryDocument = await Category.findOne({ categoryName });
+  if (!categoryDocument) {
+    categoryDocument = new Category({ categoryName });
+    await categoryDocument.save();
+  }
+  return categoryDocument._id;
+}
+
 // Function to process transactions and summarize data
-function processTransactions(transactions) {
+async function processTransactions(transactions) {
   const summary = {};
 
-  transactions.forEach(transaction => {
-    const category = assignCategory(transaction[2]); // Assuming description is in the 3rd column
+  for (const transaction of transactions) {
+    const category = await getCategoryId(assignCategory(transaction[2])); // Assuming description is in the 3rd column
     if (!summary[category]) {
       summary[category] = { Amount: 0, LatestDate: new Date(0) };
     }
@@ -47,7 +59,7 @@ function processTransactions(transactions) {
     if (transDate > summary[category].LatestDate) {
       summary[category].LatestDate = transDate;
     }
-  });
+  }
 
   return summary;
 }
@@ -63,12 +75,18 @@ export async function parseExcelFile(filePath) {
   const rawDataArray = rows.slice(12); // Skip the first 12 rows
 
   const transactionsSummary = processTransactions(rawDataArray);
-  const transactionsToInsert = Object.entries(transactionsSummary).map(([category, data]) => ({
-    description: `Total for ${category}`,
-    amount: data.Amount,
-    category: category,
-    date: data.LatestDate
-  }));
+  const transactionsToInsert = Object.entries(transactionsSummary).map(([category, data]) => {
+    const descriptions = categoryDescriptionsMap.get(category) || [];
+    // You can choose the first description, a random one, or any other logic
+    const description = descriptions.length > 0 ? descriptions[0] : `No description for ${category}`;
+
+    return {
+        description: description,
+        amount: data.Amount,
+        category: category,
+        date: data.LatestDate
+    };
+});
 
   if (transactionsToInsert.length > 0) {
     try {

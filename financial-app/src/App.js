@@ -1,4 +1,4 @@
-//App.js
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import GlobalBanner from './Design/GlobalBanner.js';
@@ -7,6 +7,8 @@ import Dashboard from './components/Pages/Dashboard.js';
 import ErrorBoundary from './components/utils/ErrorBoundary.js'; 
 import FileImport from './components/Pages/FileImport.js';
 import TransactionEntry from './components/Pages/TransactionEntry.js';
+import CategoryMaintenance from './components/Pages/CategoryMaintenance.js';
+import DescriptionMaintenance from './components/Pages/DescriptionMaintenance.js';
 import { ThemeProvider } from 'styled-components';
 
 const theme = {
@@ -43,6 +45,16 @@ function App() {
               <Route path="/TransactionEntry" element={
             <ErrorBoundary>
               <TransactionEntry />
+            </ErrorBoundary>
+          } />
+              <Route path="/CategoryMaintenance" element={
+            <ErrorBoundary>
+              <CategoryMaintenance />
+            </ErrorBoundary>
+          } />
+               <Route path="/DescriptionMaintenance" element={
+            <ErrorBoundary>
+              <DescriptionMaintenance />
             </ErrorBoundary>
           } />
         </Routes>

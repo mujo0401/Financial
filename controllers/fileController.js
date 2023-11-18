@@ -28,6 +28,37 @@ const storage = new GridFsStorage({
   },
 });
 
+export const getFile = async (req, res, next) => {
+  try {
+      const files = await FileModel.find();
+      res.json(files);
+  } catch (error) {
+      next(error);
+  }
+};
+
+export const deleteFile = (req, res) => {
+  const file_id = req.params.fileId;
+
+  if (!mongoose.Types.ObjectId.isValid(file_id)) {
+    return res.status(400).json({ error: 'Invalid file ID' });
+  }
+
+  const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName: 'uploads',
+  });
+  
+  bucket.delete(mongoose.Types.ObjectId(file_id), (err) => {
+    if (err) {
+      // Log the error for debugging purposes
+      console.error(err);
+      return res.status(404).json({ error: 'File not found or could not be deleted' });
+    }
+    res.status(200).json({ message: 'File deleted successfully' });
+  });
+};
+
+
 const upload = multer({ storage: storage });
 
 export const uploadFile = (req, res) => {
@@ -47,28 +78,3 @@ export const uploadFile = (req, res) => {
       .catch(error => res.status(500).json({ error: error.message }));
     });
   };
-
-  export const getAllFiles = async (req, res, next) => {
-    try {
-        const files = await FileModel.find();
-        res.json(files);
-    } catch (error) {
-        next(error);
-    }
-};
-  
-  export const deleteFile = (req, res) => {
-    const file_id = req.params.fileId;
-    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-      bucketName: 'uploads',
-    });
-    
-    bucket.delete(mongoose.Types.ObjectId(file_id), (err) => {
-      if (err) {
-        return res.status(404).json({ error: 'File not found' });
-      }
-      res.status(200).json({ message: 'File deleted successfully' });
-    });
-  };
-
-
