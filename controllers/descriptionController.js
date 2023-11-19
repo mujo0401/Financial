@@ -1,12 +1,12 @@
-const Description = require('../models/Description');
+import description from '../models/descriptionModel.js';
 
 // Create a new description
-exports.createDescription = async (req, res) => {
+export const createDescription = async (req, res) => {
     try {
-        const newDescription = new Description({
-            keyword: req.body.keyword,
-            category: req.body.category,
-            // add other fields as needed
+        const newDescription = new description({
+            DescriptionId: req.body.DescriptionId,
+            DescriptionName: req.body.DescriptionName,
+            isActive: req.body.isActive
         });
         const savedDescription = await newDescription.save();
         res.status(201).json(savedDescription);
@@ -16,9 +16,9 @@ exports.createDescription = async (req, res) => {
 };
 
 // Retrieve all descriptions
-exports.getAllDescriptions = async (req, res) => {
+export const getAllDescriptions = async (req, res) => {
     try {
-        const descriptions = await Description.find();
+        const descriptions = await description.find();
         res.json(descriptions);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -26,13 +26,13 @@ exports.getAllDescriptions = async (req, res) => {
 };
 
 // Retrieve a single description by ID
-exports.getDescriptionById = async (req, res) => {
+export const getDescriptionById = async (req, res) => {
     try {
-        const description = await Description.findById(req.params.id);
+        const description = await description.findById(req.params.id);
         if (description) {
             res.json(description);
         } else {
-            res.status(404).json({ message: 'Description not found' });
+            res.status(404).json({ message: 'description not found' });
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -40,17 +40,17 @@ exports.getDescriptionById = async (req, res) => {
 };
 
 // Update a description
-exports.updateDescription = async (req, res) => {
+export const updateDescription = async (req, res) => {
     try {
-        const updatedDescription = await Description.findByIdAndUpdate(
+        const updatedDescription = await description.findByIdAndUpdate(
             req.params.id,
-            req.body,
-            { new: true }
+            { DescriptionName: req.body.DescriptionName, isActive: req.body.isActive },
+            { new: true }  // to return the updated document
         );
         if (updatedDescription) {
             res.json(updatedDescription);
         } else {
-            res.status(404).json({ message: 'Description not found' });
+            res.status(404).json({ message: 'description not found' });
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -58,14 +58,25 @@ exports.updateDescription = async (req, res) => {
 };
 
 // Delete a description
-exports.deleteDescription = async (req, res) => {
+export const deleteDescription = async (req, res) => {
     try {
-        const deletedDescription = await Description.findByIdAndDelete(req.params.id);
+        const deletedDescription = await description.findByIdAndDelete(req.params.id);
         if (deletedDescription) {
-            res.json({ message: 'Description deleted' });
+            res.json({ message: 'description deleted' });
         } else {
-            res.status(404).json({ message: 'Description not found' });
+            res.status(404).json({ message: 'description not found' });
         }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Search descriptions by name
+export const searchDescriptionsByName = async (req, res) => {
+    try {
+        const searchName = req.query.name;
+        const descriptions = await description.find({ DescriptionName: { $regex: searchName, $options: 'i' } });
+        res.json(descriptions);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

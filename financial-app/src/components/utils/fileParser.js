@@ -1,8 +1,7 @@
 import fs from 'fs';
 import readXlsxFile from 'read-excel-file/node';
 import Transaction  from '../../../../models/transactionModel.js';
-import { Category }  from '../../../../models/categoryModel.js';
-import { Description }  from '../../../../models/descriptionModel.js';
+import Category from '../../../../models/categoryModel.js';
 
 // Category keywords mapping
 const categoryKeywords = {
@@ -25,12 +24,15 @@ const categoryKeywords = {
 
 // Function to assign a category based on description
 function assignCategory(description) {
-  for (const [category, keywords] of Object.entries(categoryKeywords)) {
-    if (keywords.some(keyword => description.includes(keyword))) {
-      return category;
+  // Check if description is a string and not empty
+  if (typeof description === 'string' && description.trim() !== '') {
+    for (const [category, keywords] of Object.entries(categoryKeywords)) {
+      if (keywords.some(keyword => description.includes(keyword))) {
+        return category;
+      }
     }
   }
-  return "Other"; // Default category if no keyword matches
+  return "Other"; // Default category if no keyword matches or description is not a string
 }
 
 // Function to get or create a category and return its ID

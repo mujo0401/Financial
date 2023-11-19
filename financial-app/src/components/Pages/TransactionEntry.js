@@ -19,14 +19,15 @@ const SubmitButton = styled(Button)` // Assuming Button is a styled component fr
 function TransactionEntry() {
     const [date, setDate] = useState('');
     const [description, setDescription] = useState('');
+    const [category, setCategory] = useState('');
     const [amount, setAmount] = useState(0);
-
+   
     const handleSubmit = async (event) => {
         event.preventDefault();
         const transaction = { date, description, amount };
     
         try {
-            const response = await fetch('/api/transactionEntry', {
+            const response = await fetch('/transactionEntry', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,6 +37,7 @@ function TransactionEntry() {
             if (response.ok) {
                 setSuccessMessage('Transaction saved successfully');
                 setDate('');
+                setCategory('');
                 setDescription('');
                 setAmount(0);
             } else {
@@ -57,8 +59,12 @@ function TransactionEntry() {
                     <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
                 </Label>
                 <Label>
-                    Description:
+                    Description Name:
                     <Input type="text" value={description} onChange={(e) => setDescription(e.target.value)} />
+                </Label>
+                <Label>
+                    Category Name:
+                    <Input type="text" value={category} onChange={(e) => setCategory(e.target.value)} />
                 </Label>
                 <Label>
                     Amount:

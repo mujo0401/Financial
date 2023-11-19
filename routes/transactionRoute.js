@@ -1,8 +1,13 @@
 import express from 'express';
-import { uploadCategorizedTransactions } from '../controllers/transactionsController.js'; 
+import { addMultipleTransactions, addSingleTransaction } from '../controllers/transactionController.js'; 
 
 const router = express.Router();
 
-router.post('/upload-categorized-transactions', uploadCategorizedTransactions);
+//Handles single transactions
+router.post('/', addSingleTransaction);
+
+//Handles multiple transactions
+router.post('/', addMultipleTransactions);
+
 
 export default router;

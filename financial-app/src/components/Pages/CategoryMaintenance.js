@@ -1,9 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { fetchCategories, createCategory, updateCategory } from '../../Services/categoryService';
-import { PageContainer, theme, Input, Button } from '../../Design/GlobalTheme'; 
+import { fetchCategories, searchCategoriesByName, createCategory, updateCategory, deleteCategory } from '../../Services/categoryService';
+import { PageContainer, theme, Input, Button, DeleteButton, EditButton } from '../../Design/GlobalTheme';
 import styled from 'styled-components';
 
-// Styled components specific to TransactionEntry
+const Spacer = styled.div`
+  margin-top: 16px; // Adjust this value as needed for your design
+`;
+
+const buttonStyle = {
+    padding: '10px 20px',
+    margin: '5px',
+    borderRadius: '5px',
+    border: 'none',
+    cursor: 'pointer',
+  };
+
+
+const deleteButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#ff4d4d', // Red color for delete button
+    color: 'white',
+  };
+
+  const editButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#1B39E3', // blue color for edit button
+    color: 'white',
+  };
+
+// Styled components specific to CategoryMaintenance
 const CategoryMaintenanceContainer = styled.div`
   // Your specific styles for the container
 `;
@@ -11,87 +36,186 @@ const CategoryMaintenanceContainer = styled.div`
 const Label = styled.label`
   color: ${theme.colors.text};
   // Additional label styling
-`;
 
-const SaveCategoryButton = styled(Button)` // Assuming Button is a styled component from GlobalTheme
-  // Additional styles for the submit button if needed
-`;
+  `;
 
+const ActionButton = styled(Button)` // Assuming Button is a styled component from GlobalTheme
+  // Additional styles for the action buttons if needed
+`;
 
 function CategoryMaintenance() {
     const [searchTerm, setSearchTerm] = useState('');
     const [categories, setCategories] = useState([]);
-    const [categoryForm, setCategoryForm] = useState({ categoryName: '', categoryId: '' });
+    const [categoryForm, setCategoryForm] = useState({ CategoryName: '', CategoryId: '', isActive: true });
+    const [hasSearched, setHasSearched] = useState(false);
+
+    const fetchAllCategories = async () => {
+        const fetchedCategories = await fetchCategories();
+        setCategories(fetchedCategories);
+    };
 
     useEffect(() => {
-        handleSearch();
-    }, [searchTerm]);
-
-    const handleSearch = async () => {
-        try {
-          const fetchedCategories = await fetchCategories(searchTerm);
-          setCategories(fetchedCategories);
-        } catch (error) {
-          // Handle error
+        if (searchTerm && hasSearched) {
+            const fetchSearchedCategories = async () => {
+                const searchedCategories = await searchCategoriesByName(searchTerm);
+                setCategories(searchedCategories);
+            };
+    
+            fetchSearchedCategories();
         }
-      };
-      // Call handleSearch
-      handleSearch();
+    }, [searchTerm, hasSearched]); 
+ 
+    const handleSearch = async (e) => {
+        e.preventDefault();
+        setHasSearched(true);
+    };
 
     const handleCategoryFormChange = (e) => {
         setCategoryForm({ ...categoryForm, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+const handleSaveOrUpdate = async (e) => {
         e.preventDefault();
         try {
-            if (categoryForm.categoryId) {
-                await updateCategory(categoryForm.categoryId, { categoryName: categoryForm.categoryName });
-            } else {
-                await createCategory({ categoryName: categoryForm.categoryName });
-            }
-            // Clear form, refresh categories
-            setCategoryForm({ categoryName: '', categoryId: '' });
-            handleSearch();
+          // Check if CategoryId is not null (i.e., editing an existing category)
+          if (categoryForm.CategoryId) {
+            await updateCategory(categoryForm.CategoryId, {
+              CategoryName: categoryForm.CategoryName,
+              isActive: categoryForm.isActive,
+            });
+            // Update state to reflect changes
+            const updatedCategories = categories.map(category => 
+              category._id === categoryForm.CategoryId ? {...category, CategoryName: categoryForm.CategoryName, isActive: categoryForm.isActive} : category
+            );
+            setCategories(updatedCategories);
+          } else {
+            const newCategory = await createCategory({
+              CategoryName: categoryForm.CategoryName,
+              isActive: categoryForm.isActive,
+            });
+            setCategories([...categories, newCategory]);
+          }
+          setCategoryForm({ CategoryName: '', CategoryId: null, isActive: true });
         } catch (error) {
-            // Handle error
+          console.error('Failed to save or update the category:', error);
+          // Optionally, fetch categories again to ensure sync with server
+          await fetchAllCategories();
         }
     };
 
     const handleEdit = (category) => {
-        setCategoryForm({ categoryName: category.categoryName, categoryId: category._id });
+        setCategoryForm({
+          CategoryName: category.CategoryName,
+          CategoryId: category._id, 
+          isActive: category.isActive,
+        });
     };
+
+    const handleDelete = async (categoryId) => {
+        try {
+            const newCategories = categories.filter(category => category._id !== categoryId);
+            setCategories(newCategories);
+            await deleteCategory(categoryId);
+        } catch (error) {
+            console.error('Error deleting category:', error);
+            await fetchAllCategories();
+        }
+    };
+    
+    const styles = () => ({
+        table: {
+          width: '100%',
+          borderCollapse: 'collapse',
+          textAlign: 'left',
+          boxShadow: '0 2px 15px rgba(0, 0, 0, 0.1)',
+        },
+        thead: {
+          backgroundColor: '#333',
+          color: '#fff',
+        },
+        th: {
+          padding: '10px 15px',
+          border: '1px solid #ddd',
+        },
+        td: {
+          padding: '10px 15px',
+          border: '1px solid #ddd',
+        },
+        tr: {
+          '&:nth-of-type(even)': {
+            backgroundColor: '#f8f8f8',
+          },
+          '&:hover': {
+            backgroundColor: '#f1f1f1',
+          },
+        },
+    
+    });
+
+    const dynamicStyles = styles();
 
     return (
         <PageContainer>
-        <CategoryMaintenanceContainer>
-        <div>
-        <form onSubmit={handleSubmit}>   
-        <Label>
-            Search Categories:
-        <Input type="text" value={searchTerm}  onChange={(e) => setSearchTerm(e.target.value)} />
-        </Label>
-        <Label>
-            Category Name:
-        <Input type="text" value={categoryForm}  onChange={(e) => handleCategoryFormChange(e.target.value)} />
-        </Label>
-      </form>
-            <div>
-            <SaveCategoryButton type="submit">Save Category</SaveCategoryButton>
-            </div>
-            {categories.map((category) => (
-                <div key={category._id}>
-                    {category.categoryName}
-                    <SaveCategoryButton onClick={() => handleEdit(category)}>Edit</SaveCategoryButton>
-                    {/* Add a delete button if needed */}
-                </div>
-                
-            ))}
-        </div>
-        </CategoryMaintenanceContainer>
-    </PageContainer>
+          <CategoryMaintenanceContainer>
+            <form onSubmit={handleSaveOrUpdate}>
+              <Label>
+                Category Name:
+                <Input
+                  type="text"
+                  name="CategoryName"
+                  value={categoryForm.CategoryName}
+                  onChange={handleCategoryFormChange}
+                />
+              </Label>
+              <ActionButton type="submit">Save/Update Category</ActionButton>
+            </form>
+            <Spacer />
+            <form onSubmit={handleSearch}>
+              <Label>
+                Search Categories:
+                <Input
+                  type="text"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </Label>
+              <ActionButton type="submit">Search</ActionButton>
+            </form>
+                {hasSearched && (
+                 <table style={dynamicStyles.table}>
+                  <thead style={styles.thead}>
+                     <tr>
+                       <th style={styles.th}>Category Name</th>
+                       <th style={styles.th}>Is Active</th>
+                       <th style={styles.th}>Created Date</th>
+                       <th style={styles.th}>Updated Date</th>
+                       <th style={styles.th}>Actions</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                     {categories.map((category, index) => (
+                       <tr key={index} style={styles.tr}>
+                         <td style={styles.td}>{category.CategoryName}</td>
+                         <td style={styles.td}>{category.isActive ? 'Yes' : 'No'}</td>
+                         <td style={styles.td}>{category.createdAt}</td>
+                         <td style={styles.td}>{category.updatedAt}</td>
+                         <td style={styles.td}>
+                         <EditButton style={editButtonStyle} onClick={() => handleEdit(category)}>
+                             Edit
+                           </EditButton>
+                           <DeleteButton style={deleteButtonStyle} onClick={() => handleDelete(category._Id)}>
+                             Delete
+                           </DeleteButton>
+                         </td>
+                       </tr>
+                     ))}
+                   </tbody>
+                 </table>
+                )}
+                <Spacer /> 
+            </CategoryMaintenanceContainer>
+        </PageContainer>
     );
 }
 
 export default CategoryMaintenance;
-

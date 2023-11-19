@@ -1,5 +1,5 @@
-
 import React from 'react';
+import './App.css';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import GlobalBanner from './Design/GlobalBanner.js';
 import Home from './components/Pages/Home.js';

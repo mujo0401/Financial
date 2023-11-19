@@ -1,20 +1,24 @@
-const express = require('express');
+import express from 'express';
+import { createDescription, getAllDescriptions, deleteDescription, updateDescription, getDescriptionById, searchDescriptionsByName } from '../controllers/descriptionController.js';
+
 const router = express.Router();
-const descriptionController = require('../controllers/descriptionController');
+
+// Route for searching categories by name
+router.get('/search', searchDescriptionsByName);
 
 // Create a new description
-router.post('/', descriptionController.createDescription);
+router.post('/', createDescription);
 
 // Retrieve all descriptions
-router.get('/', descriptionController.getAllDescriptions);
+router.get('/', getAllDescriptions);
 
 // Retrieve a single description by ID
-router.get('/:id', descriptionController.getDescriptionById);
+router.get('/:id', getDescriptionById);
 
 // Update a description
-router.put('/:id', descriptionController.updateDescription);
+router.put('/:id', updateDescription);
 
 // Delete a description
-router.delete('/:id', descriptionController.deleteDescription);
+router.delete('/:id', deleteDescription);
 
-module.exports = router;
+export default router;

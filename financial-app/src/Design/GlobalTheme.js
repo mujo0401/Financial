@@ -59,6 +59,12 @@ export const GlobalStyle = createGlobalStyle`
     color: white;
   }
 
+  .edit-button {
+    background-color: ${theme.colors.edit};
+    color: white;
+  }
+
+
   .process-button {
     background-color: ${theme.colors.process};
     color: white;
@@ -74,6 +80,18 @@ export const DeleteButton = styled.button`
   cursor: pointer;
   &:hover {
     background-color: ${props => props.theme.colors.deleteHover};
+  }
+`;
+
+export const EditButton = styled.button`
+  background-color: ${props => props.theme.colors.edit};
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: ${props => props.theme.colors.editHover};
   }
 `;
 

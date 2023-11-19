@@ -1,11 +1,11 @@
-const Category = require('../models/Category');
+import Category from '../models/categoryModel.js';
 
 // Create a new category
-exports.createCategory = async (req, res) => {
+export const createCategory = async (req, res) => {
     try {
         const newCategory = new Category({
-            categoryName: req.body.categoryName,
-            // add other fields as needed
+            CategoryName: req.body.CategoryName,
+            isActive: req.body.isActive
         });
         const savedCategory = await newCategory.save();
         res.status(201).json(savedCategory);
@@ -15,7 +15,7 @@ exports.createCategory = async (req, res) => {
 };
 
 // Retrieve all categories
-exports.getAllCategories = async (req, res) => {
+export const getAllCategories = async (req, res) => {
     try {
         const categories = await Category.find();
         res.json(categories);
@@ -25,7 +25,7 @@ exports.getAllCategories = async (req, res) => {
 };
 
 // Retrieve a single category by ID
-exports.getCategoryById = async (req, res) => {
+export const getCategoryById = async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
         if (category) {
@@ -39,11 +39,11 @@ exports.getCategoryById = async (req, res) => {
 };
 
 // Update a category
-exports.updateCategory = async (req, res) => {
+export const updateCategory = async (req, res) => {
     try {
         const updatedCategory = await Category.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            { CategoryName: req.body.CategoryName, isActive: req.body.isActive },
             { new: true }  // to return the updated document
         );
         if (updatedCategory) {
@@ -57,7 +57,7 @@ exports.updateCategory = async (req, res) => {
 };
 
 // Delete a category
-exports.deleteCategory = async (req, res) => {
+export const deleteCategory = async (req, res) => {
     try {
         const deletedCategory = await Category.findByIdAndDelete(req.params.id);
         if (deletedCategory) {
@@ -65,6 +65,17 @@ exports.deleteCategory = async (req, res) => {
         } else {
             res.status(404).json({ message: 'Category not found' });
         }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Search categories by name
+export const searchCategoriesByName = async (req, res) => {
+    try {
+        const searchName = req.query.name;
+        const categories = await Category.find({ CategoryName: { $regex: searchName, $options: 'i' } });
+        res.json(categories);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

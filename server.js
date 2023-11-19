@@ -8,9 +8,9 @@ import dotenv from 'dotenv';
 import fileRoute from './routes/fileRoute.js';
 import uploadRoute from './routes/uploadRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
-import transactionEntryRoute from './routes/transactionEntryRoute.js';
-import categoryRoute from './routes/descriptionRoute.js';
-import descriptionRoute from './routes/categoryRoute.js';
+import categoryRoute from './routes/categoryRoute.js';
+import descriptionRoute from './routes/descriptionRoute.js';
+import transactionRoute from './routes/transactionRoute.js';
 
 dotenv.config();
 
@@ -61,11 +61,11 @@ app.use(express.static(path.join(__dirname, 'financial-app', 'public')));
 
 // Route definitions
 app.use('/api/files', fileRoute);
+app.use('/transactionEntry', transactionRoute);
 app.use('/api/upload', uploadRoute);
-app.use('/api/dashboard', dashboardRoute);
-app.use('/api/transactionEntry', transactionEntryRoute);
 app.use('/api/categories', categoryRoute);
 app.use('/api/descriptions', descriptionRoute);
+app.use('/api/dashboard', dashboardRoute);
 
 // Start the server
 app.listen(PORT, () => {
