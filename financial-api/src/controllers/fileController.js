@@ -3,7 +3,7 @@ import { GridFsStorage } from 'multer-gridfs-storage';
 import crypto from 'crypto';
 import path from 'path';
 import mongoose from 'mongoose';
-import { File } from '../Models/fileModel.js';
+import { File } from '../models/fileModel.js';
 import express from 'express';
 
 const app = express();

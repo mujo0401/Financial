@@ -1,5 +1,5 @@
 import express from 'express';
-import { getFile, deleteFile, uploadFile }  from './Controllers/fileController.js';
+import { getFile, deleteFile, uploadFile }  from '../Controllers/fileController.js';
 
 const router = express.Router();
 
