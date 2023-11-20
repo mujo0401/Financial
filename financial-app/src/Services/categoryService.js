@@ -1,5 +1,14 @@
 import axios from 'axios';
 
+/*export async function findOrCreateCategory(categoryName) {
+    let category = await Category.findOne({ categoryName });
+    if (!category) {
+      category = new Category({ categoryName });
+      await category.save();
+    }
+    return category;
+  }*/
+
 export const searchCategoriesByName = async (name) => {
     try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/search`, { params: { name } });

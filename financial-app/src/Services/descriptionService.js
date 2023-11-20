@@ -1,5 +1,14 @@
 import axios from 'axios';
 
+/*export async function findOrCreateDescription(descriptionName, categoryId) {
+    let description = await Description.findOne({ descriptionName, CategoryName: categoryId });
+    if (!description) {
+      description = new Description({ descriptionName, CategoryName: categoryId });
+      await description.save();
+    }
+    return description;
+  }*/
+
 export const searchDescriptionsByName = async (name) => {
     try {
         const response = await axios.get(`$p{rocess.env.SERVER_API_URL/api/descriptions/search`, { params: { name } });
@@ -9,7 +18,6 @@ export const searchDescriptionsByName = async (name) => {
         throw error;
     }
 };
-
 
 export const fetchDescriptions = async (searchTerm = '') => {
     try {

@@ -1,14 +1,14 @@
 import React from 'react';
-import './App.css';
-import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import GlobalBanner from './Design/GlobalBanner.js';
-import Home from './components/Pages/Home.js';
-import Dashboard from './components/Pages/Dashboard.js';
-import ErrorBoundary from './components/utils/ErrorBoundary.js'; 
-import FileImport from './components/Pages/FileImport.js';
-import TransactionEntry from './components/Pages/TransactionEntry.js';
-import CategoryMaintenance from './components/Pages/CategoryMaintenance.js';
-import DescriptionMaintenance from './components/Pages/DescriptionMaintenance.js';
+import './styles/App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import GlobalBanner from './styles/GlobalBanner.js';
+import Home from './pages/Home.js';
+import Dashboard from './pages/Dashboard.js';
+import ErrorBoundary from './utils/ErrorBoundary.js'; // Assuming ErrorBoundary is within your frontend utils
+import FileImport from './pages/FileImport.js';
+import TransactionEntry from './pages/TransactionEntry.js';
+import CategoryMaintenance from './pages/CategoryMaintenance.js';
+import DescriptionMaintenance from './pages/DescriptionMaintenance.js';
 import { ThemeProvider } from 'styled-components';
 
 const theme = {
