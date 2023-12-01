@@ -1,11 +1,9 @@
 import axios from 'axios';
 
-const TRANSACTION_URL = 'http://localhost:3000/api/transactions'; 
-
 const transactionEntryService = {
   addTransaction: async (transactionData) => {
     try {
-     const response = axios.post(TRANSACTION_URL, transactionData, {
+     const response = axios.post(`${process.env.REACT_APP_API_URL}/transactions`, transactionData, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': '*/*',

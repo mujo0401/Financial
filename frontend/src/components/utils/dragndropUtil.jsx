@@ -7,13 +7,14 @@ const FileDrop = ({ onFilesAdded }) => {
   const [fileHashes, setFileHashes] = useState(new Set());
 
   const onDrop = useCallback(async (acceptedFiles) => {
+    let newHashes = new Set(fileHashes);
     const newFiles = [];
     const duplicates = [];
     const newActualFiles = [];
 
     for (const file of acceptedFiles) {
       const fileHash = await FileHandling.getFileHash(file);
-      if (!fileHashes.has(fileHash)) {
+      if (!newHashes.has(fileHash)) {
         setFileHashes(prevHashes => new Set([...prevHashes, fileHash]));
         const fileInfo = {
           name: file.name,
@@ -28,8 +29,9 @@ const FileDrop = ({ onFilesAdded }) => {
     }
 
     // Pass the new and duplicate files back to the parent component
+    setFileHashes(newHashes);
     onFilesAdded(newFiles, newActualFiles, duplicates);
-  }, [fileHashes]);
+}, [fileHashes, onFilesAdded]);
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 

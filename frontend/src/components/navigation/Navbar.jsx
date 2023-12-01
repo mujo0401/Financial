@@ -10,6 +10,7 @@ const Navbar = () => {
         <li><a href="/">Home</a></li>
               <li><a href="/TransactionEntry">Transaction Entry</a></li>
               <li><a href="/TransactionUpload">Upload Bank Statement(s)</a></li>
+              <li><a href="/Dashboard">Dashboard</a></li>
             </ul>
     </nav>
   );

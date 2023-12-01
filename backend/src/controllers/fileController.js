@@ -5,9 +5,6 @@ import crypto from 'crypto';
 import path from 'path';
 import mongoose from 'mongoose';
 import { File } from '../models/fileModel.js';
-import express from 'express';
-
-const app = express();
 
 // Set up GridFS storage
 const storage = new GridFsStorage({

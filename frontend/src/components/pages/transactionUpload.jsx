@@ -1,14 +1,14 @@
 // transactionUpload.jsx
 import React from 'react';
 import TransactionUploadForm from 'components/pages/forms/transactionUploadForm'; 
-import { TransactionUploadPageContainer } from 'components/assets/localAssets/transactionUploadStyle';
+import { Container } from '@mui/material';
 
 const TransactionUpload = () => {
   return (
-    <TransactionUploadPageContainer>
+    <Container>
       <h1>Upload Your Files</h1>
       <TransactionUploadForm />
-    </TransactionUploadPageContainer>
+    </Container>
   );
 };
 

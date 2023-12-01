@@ -1,19 +1,18 @@
 import React from 'react';
 
-import { HomePageContainer, WelcomeText, DescriptionText, ActionButton } from 'components/assets/localAssets/homePageStyle';
-
+//import { HomePageContainer } from 'components/assets/localAssets/homePageStyle';
+import { Button, TextField, Container } from '@mui/material';
 
 
 
 const HomePage = () => {
   return (
-    <HomePageContainer>
-      <WelcomeText>Meet Carl the Finance AI!</WelcomeText>
-      <DescriptionText>
-        It is pretty bad at Finance so have some foresight before you follow its advice
-      </DescriptionText>
-      <ActionButton to="/signup">Get Started</ActionButton>
-    </HomePageContainer>
+    <Container>
+      <TextField>Meet Carl the Finance AI!</TextField>
+      <TextField>
+        It is pretty bad at Finance so have some foresight before you follow its advice </TextField>
+      <Button to="/signup">Get Started</Button>
+    </Container>
   );
 };
 

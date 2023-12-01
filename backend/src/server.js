@@ -10,6 +10,8 @@ import categoryRoute from './routes/categoryRoute.js';
 import descriptionRoute from './routes/descriptionRoute.js'; 
 import fileRoute from './routes/fileRoute.js';
 import uploadRoute from './routes/uploadRoute.js';
+import healthRoute from './routes/healthRoute.js';
+import dashboardRoute from './routes/dashboardRoute.js';
 
 const app = express();
 
@@ -62,9 +64,11 @@ const upload = multer({ storage: storage });
 // API routes
 app.use('/api/files', fileRoute);
 app.use('/api/transactions', transactionRoute);
-app.use('/api/uploads', upload.array('files', 10), uploadRoute);
+app.use('/api/upload', upload.array('files', 10), uploadRoute);
 app.use('/api/categories', categoryRoute);
 app.use('/api/descriptions', descriptionRoute);
+app.use('/api/health', healthRoute);
+app.use('/api/dashboard', dashboardRoute);
 
 // In your Express server setup:
 app.get('/api/health', (req, res) => {

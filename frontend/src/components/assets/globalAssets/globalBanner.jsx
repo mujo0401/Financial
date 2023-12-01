@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { theme  } from 'components/assets/globalAssets/globalStyle';
+import theme  from 'components/assets/globalAssets/globalStyle';
 
 const BannerContainer = styled.div`
 

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const checkBackendHealth = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/health');
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/health`);
     if (response.status === 200) {
       console.log('Backend is up and running!');
     }

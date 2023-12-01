@@ -1,139 +1,150 @@
-import { styled } from 'styled-components';
-import { theme } from 'components/assets/globalAssets/globalStyle'
-
-// Styled Button
-export const Button = styled.button`
-  background-color: ${theme.colors.primary};
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: ${theme.buttons.borderRadius};
-  cursor: pointer;
-  font-size: ${theme.typography.fontSize};
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: ${theme.colors.secondary};
-  }
-
-  &:focus {
-    outline: none;
-  }
-`;
+import { styled } from '@mui/material/styles';
+import theme  from 'components/assets/globalAssets/globalStyle'
 
 // Styled Table
-export const StyledTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-`;
+export const StyledTable = styled('table')(({ theme }) => ({
+  width: '100%',
+  borderCollapse: 'collapse',
+  boxShadow: '0 2px 15px rgba(0, 0, 0, 0.1)',
+  // ... other styles
+}));
 
 // Styled Table Header (th)
-export const StyledTh = styled.th`
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-  background-color: ${theme.colors.secondary};
-  color: white;
-  text-align: left;
-`;
+export const StyledTh = styled('th')(({ theme }) => ({
+  padding: '10px 15px',
+  border: '1px solid #ddd',
+  backgroundColor: theme.palette.secondary.main,
+  color: 'white',
+  textAlign: 'left',
+}));
 
-// Styled Table Row (tr)
-export const StyledTr = styled.tr`
-  &:nth-of-type(even) {
-    background-color: #f8f8f8;
-  }
-  &:hover {
-    background-color: #f1f1f1;
-  }
-`;
+export const StyledTr = styled('tr')(({ theme }) => ({
+  '&:nth-of-type(even)': {
+    backgroundColor: '#f8f8f8',
+  },
+  '&:hover': {
+    backgroundColor: '#f1f1f1',
+  },
+}));
 
-// Styled Table Data Cell (td)
-export const StyledTd = styled.td`
-  padding: 10px 15px;
-  border: 1px solid #ddd;
-`;
+export const StyledTd = styled('td')({
+  padding: '10px 15px',
+  border: '1px solid #ddd',
+});
+
+export const Button = styled('button')(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  color: 'white',
+  padding: '10px 20px',
+  border: 'none',
+  borderRadius: theme.shape.borderRadius, 
+  cursor: 'pointer',
+  fontSize: theme.typography.fontSize,
+  transition: 'background-color 0.3s',
+  '&:hover': {
+    backgroundColor: theme.palette.secondary.main, 
+  },
+  '&:focus': {
+    outline: 'none',
+  },
+}));
+
 
 // Styled Input
-export const Input = styled.input`
-  display: block;    
-  padding: 10px;
-  border: 2px solid ${theme.colors.secondary};
-  border-radius: ${theme.inputs.borderRadius};
-  margin: 10px 0 10px 10px; 
-  width: 30%;         
-  box-sizing: border-box; 
+export const Input = styled('input')(({ theme }) => ({
+  display: 'block',
+  padding: '10px',
+  border: `1px solid ${theme.palette.primary.main}`, // Corrected border style
+  borderRadius: theme.shape.borderRadius,
+  margin: '10px 0 10px 10px',
+  width: '30%', // Added percentage sign
+  boxSizing: 'border-box', // camelCase for CSS property
 
-  &:focus {
-    border-color: ${theme.colors.primary};
-    outline: none;
-  }
-`;
+  '&:focus': {
+    borderColor: theme.palette.primary.main, // borderColor for focus
+    outline: 'none',
+  },
+}));
 
-export const Label = styled.label`
-  display: block;        
-  margin-bottom: 8px;     
-  color: #333;            
-  font-size: 16px;       
-  font-weight: bold;      
-  line-height: 1.5;       
-  text-transform: uppercase; 
+export const Label = styled('label')(({ theme }) => ({
+  display: 'block',
+  marginBottom: '8px',
+  color: '#333',
+  fontSize: '16px', // Use camelCase for CSS properties
+  fontWeight: 'bold',
+  lineHeight: 1.5,
+  textTransform: 'uppercase',
 
-  &:focus-within {
-    color: #1B39E3; 
-  }
-`;
+  '&:focus-within': {
+    color: '#1B39E3', // Assuming this color is what you want
+  },
+}));
 
-export const DeleteButton = styled.button`
-  background-color: ${props => props.theme.colors.delete};
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  &:hover {
-    background-color: ${props => props.theme.colors.deleteHover};
-  }
-`;
+export const DeleteButton = styled('button')(({ theme }) => ({
+  backgroundColor: theme.palette.delete.main,
+  color: 'white',
+  padding: '10px 20px',
+  border: 'none',
+  borderRadius: theme.shape.borderRadius, 
+  cursor: 'pointer',
+  fontSize: theme.typography.fontSize,
+  transition: 'background-color 0.3s',
+  '&:hover': {
+    backgroundColor: theme.palette.delete.main, 
+  },
+  '&:focus': {
+    outline: 'none',
+  },
+}));
 
-export const EditButton = styled.button`
-  background-color: ${props => props.theme.colors.edit};
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  &:hover {
-    background-color: ${props => props.theme.colors.editHover};
-  }
-`;
+export const EditButton = styled('button')(({ theme }) => ({
+  backgroundColor: theme.palette.edit.main,
+  color: 'white',
+  padding: '10px 20px',
+  border: 'none',
+  borderRadius: theme.shape.borderRadius, 
+  cursor: 'pointer',
+  fontSize: theme.typography.fontSize,
+  transition: 'background-color 0.3s',
+  '&:hover': {
+    backgroundColor: theme.palette.edit.main, 
+  },
+  '&:focus': {
+    outline: 'none',
+  },
+}));
 
-export const Select = styled.select`
-  display: block;
-  padding: 10px;
-  border: 2px solid ${theme.colors.secondary};
-  border-radius: 4px;
-  margin: 10px 0 10px 10px;
-  width: 30%;
-  box-sizing: border-box;
+export const ProcessButton = styled('button')(({ theme }) => ({
+  backgroundColor: theme.palette.process.main,
+  color: 'white',
+  padding: '10px 20px',
+  border: 'none',
+  borderRadius: theme.shape.borderRadius, 
+  cursor: 'pointer',
+  fontSize: theme.typography.fontSize,
+  transition: 'background-color 0.3s',
+  '&:hover': {
+    backgroundColor: theme.palette.process.main, 
+  },
+  '&:focus': {
+    outline: 'none',
+  },
+}));
 
-  &:focus {
-    border-color: ${theme.colors.primary};
-    outline: none;
-  }
-`;
+export const StyledSelect = styled('select')(({ theme }) => ({
+  display: 'block',
+  padding: '10px',
+  border: `2px solid ${theme.palette.secondary.main}`,
+  borderRadius: '4px',
+  margin: '10px 0 10px 10px',
+  width: '30%',
+  boxSizing: 'border-box',
 
-export const ProcessButton = styled.button`
-background-color: ${props => props.theme.colors.process};
-color: white;
-padding: 10px 15px;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-&:hover {
-  background-color: ${props => props.theme.colors.processHover};
-}
-`;
-
+  '&:focus': {
+    borderColor: theme.palette.primary.main,
+    outline: 'none',
+  },
+}));
 
 export const Style = () => ({
   table: {
@@ -163,4 +174,7 @@ export const Style = () => ({
     },
   },
 });
+
+
+
 

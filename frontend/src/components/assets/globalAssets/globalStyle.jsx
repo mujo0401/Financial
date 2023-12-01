@@ -1,47 +1,36 @@
-import { createGlobalStyle } from 'styled-components';
+import { createTheme } from '@mui/material/styles';
 
-export const colors = {
-  primary: '#005f73', 
-  secondary: '#0a9396',
-  background: '#f0f4f8', 
-  text: '#333f48', 
-  border: '#cad2c5', 
-};
-
-export const typography = {
-  fontFamily: 'Roboto, sans-serif',
-  fontSize: '16px',
-  h1: {
-    fontSize: '2em',
-    fontWeight: 'bold',
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#005f73',
+    },
+    secondary: {
+      main: '#0a9396',
+    },
+    delete: {
+      main: '#9b2226',
+    },
+    edit: {
+      main: '#ff4d4d',
+    },
+    process: {
+      main: '#94d2bd',
+    },
   },
-  h2: {
-    fontSize: '1.5em',
-    fontWeight: 'bold',
+  typography: {
+    fontFamily: 'Roboto, sans-serif',
+    fontSize: '16px',
+    h1: {
+      fontSize: '2em',
+      fontWeight: 'bold',
+    },
+    h2: {
+      fontSize: '1.5em',
+      fontWeight: 'bold',
+    },
   },
-
-};
-
-export const buttons = {
-  borderRadius: '2px',
-  padding: '8px 16px',
-
-};
-
-export const inputs = {
-  borderRadius: '2px',
-  padding: '8px 12px',
-  border: `1px solid ${colors.border}`,
-
-};
-
-export const theme = {
-  colors, 
-  typography, 
-  buttons, 
-  inputs, 
-};
-
+});
 
 export const buttonStyle = {
   padding: '10px 20px',
@@ -63,25 +52,4 @@ export const processButtonStyle = {
   color: 'white',
 };
 
-export const GlobalStyle = createGlobalStyle`
-  body {
-    margin: 0;
-    padding: 0;
-  }
-
-  .delete-button {
-    background-color: ${theme.colors.delete};
-    color: white;
-  }
-
-  .edit-button {
-    background-color: ${theme.colors.edit};
-    color: white;
-  }
-
-  .process-button {
-    background-color: ${theme.colors.process};
-    color: white;
-  }
-`;
-
+export default theme 

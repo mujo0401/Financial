@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import FileDrop from 'components/utils/dragndropUtil';
 import FileHandling from 'components/services/transactionUploadService';
 import moment from 'moment';
-import { DeleteButton, ProcessButton, Style } from 'components/assets/localAssets/localStyle';
+import { Style } from 'components/assets/localAssets/localStyle';
 import { deleteButtonStyle, processButtonStyle } from 'components/assets/globalAssets/globalStyle';
+import { Button } from '@mui/material';
 
 const TransactionUploadForm = () => {
   const [files, setFiles] = useState([]); // Tracks file info
@@ -90,9 +91,9 @@ const TransactionUploadForm = () => {
         <td style={Style.td}>{file.name}</td>
         <td style={Style.td}>{moment(file.lastModified).format('YYYY-MM-DD HH:mm:ss')}</td>
         <td style={Style.td}>
-          <DeleteButton style={deleteButtonStyle} onClick={() => deleteFile(file.hash)}>
+          <Button style={deleteButtonStyle} onClick={() => deleteFile(file.hash)}>
               Delete
-          </DeleteButton>
+          </Button>
         </td>
       </tr>
     ))}
@@ -100,13 +101,13 @@ const TransactionUploadForm = () => {
 </table>
         </div>
       )}
-      <ProcessButton 
+      <Button 
   style={processButtonStyle} 
   onClick={processAndVisualizeFiles}
   disabled={actualFiles.length === 0} // Disable the button if there are no files
 >
   Process and Visualize
-</ProcessButton>
+</Button>
     </div>
   );
 };

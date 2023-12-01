@@ -8,6 +8,10 @@ import HomePage from 'components/pages/homePage';
 import TransactionEntry from 'components/pages/transactionEntry';
 //import ErrorBoundary from 'components/errorHandling/errorBoundary';
 import TransactionUpload from 'components/pages/transactionUpload';
+import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from 'components/assets/globalAssets/globalStyle'; 
+
 
 const App = () => {
   useEffect(() => {
@@ -15,15 +19,18 @@ const App = () => {
   }, []);
 
   return (
-    <Router>
-      <GlobalBanner />   
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />        
-        <Route path="/TransactionEntry" element={<TransactionEntry />} />
-        <Route path="/TransactionUpload" element={<TransactionUpload />} />
-      </Routes>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <GlobalBanner />   
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />        
+          <Route path="/TransactionEntry" element={<TransactionEntry />} />
+          <Route path="/TransactionUpload" element={<TransactionUpload />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 };
 

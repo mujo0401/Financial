@@ -1,16 +1,16 @@
 import React from 'react';
 import TransactionForm from 'components/pages/forms/transactionEntryForm';
-import { TransactionEntryPageContainer } from 'components/assets/localAssets/transactionEntryStyle';
+import { Container } from '@mui/material';
 
 
 const TransactionEntry = () => {
   return (
-    <TransactionEntryPageContainer>
+    <Container>
     <div>
       <h1>Single Transaction Entries</h1>
       <TransactionForm />
     </div>
-    </TransactionEntryPageContainer>
+    </Container>
   );
 };
 

@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const DESC_URL = 'http://localhost:3000/api/descriptions'; 
+//const DESC_URL = 'http://localhost:3000/api/descriptions'; 
 
 const descriptionService = {
     getDescriptions: async () => {
       try {
-        const response = await axios.get(DESC_URL);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/descriptions`);
         return response.data;
       } catch (error) {
         console.error('Error fetching descriptions:', error);

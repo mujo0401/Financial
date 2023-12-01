@@ -1,6 +1,7 @@
 import { styled } from 'styled-components';
 import { Link } from 'react-router-dom';
-import { colors } from 'components/assets/globalAssets/globalStyle'
+import { colors } from 'components/assets/globalAssets/globalStyle';
+
 
 export const HomePageContainer = styled.div`
 background: url(${colors.background}) no-repeat center center fixed;
