@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const FILE_URL = 'http://localhost:3000/api/upload';
+
 const FileHandling = {
   uploadFiles: async function(files) {
     try {
@@ -8,7 +10,7 @@ const FileHandling = {
         formData.append('files', file);
       });
 
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/upload`, formData, {
+      const response = await axios.post(FILE_URL, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('token')}`

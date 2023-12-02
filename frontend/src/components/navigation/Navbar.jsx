@@ -1,21 +1,19 @@
-// Navbar.js
-import React from 'react';
-import 'navbar.css'; 
+// In Navbar.js
+
+import { Button } from 'components/assets/localAssets/localStyle';
 
 const Navbar = () => {
+  const scrollToSection = (sectionId) => {
+    document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
-    <nav className="menu">
-      <ul className="menu-list">
-        <li><a href="/">Home</a></li>
-              <li><a href="/TransactionEntry">Transaction Entry</a></li>
-              <li><a href="/TransactionUpload">Upload Bank Statement(s)</a></li>
-              <li><a href="/Dashboard">Dashboard</a></li>
-            </ul>
+    <nav>
+      <Button onClick={() => scrollToSection('dashboard-section')}>Dashboard</Button>
+      <Button onClick={() => scrollToSection('transaction-entry-section')}>Transaction Entry</Button>
+      <Button onClick={() => scrollToSection('transaction-upload-section')}>Transaction Upload</Button>
     </nav>
   );
 };
 
 export default Navbar;
-
-

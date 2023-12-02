@@ -17,7 +17,6 @@ const TransactionUploadForm = () => {
     setFiles(currFiles => [...currFiles, ...newFiles]);
     setActualFiles(currActualFiles => [...currActualFiles, ...newActualFiles]);
     setDuplicateFiles(duplicates);
-    // Update fileHashes if needed
   };
 
   const processAndVisualizeFiles = async () => {
@@ -50,7 +49,6 @@ const TransactionUploadForm = () => {
       }
     }
   
-    // Update the actualFiles state with the filtered files
     setActualFiles(updatedActualFiles);
   };
 
@@ -106,7 +104,7 @@ const TransactionUploadForm = () => {
   onClick={processAndVisualizeFiles}
   disabled={actualFiles.length === 0} // Disable the button if there are no files
 >
-  Process and Visualize
+  Process File(s)
 </Button>
     </div>
   );

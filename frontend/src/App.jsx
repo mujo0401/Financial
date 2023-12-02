@@ -1,36 +1,50 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import backgroundImage from 'components/assets/images/background.png'; // Adjust the path as necessary
 import Navbar from 'components/navigation/Navbar';
-import GlobalBanner from 'components/assets/globalAssets/globalBanner';
 import checkBackendHealth from 'components/services/healthCheckService';
-import HomePage from 'components/pages/homePage';
 import TransactionEntry from 'components/pages/transactionEntry';
-//import ErrorBoundary from 'components/errorHandling/errorBoundary';
+import ErrorBoundary from 'components/errorHandling/errorBoundary';
 import TransactionUpload from 'components/pages/transactionUpload';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from 'components/assets/globalAssets/globalStyle'; 
-
+import Dashboard from 'components/pages/dashboard'
 
 const App = () => {
   useEffect(() => {
     checkBackendHealth();
   }, []);
 
+  const appStyle = {
+    backgroundImage: `url(${backgroundImage})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center center',
+    backgroundAttachment: 'fixed',
+    backgroundSize: 'cover',
+    minHeight: '100vh',
+  };
+
   return (
+    <ErrorBoundary>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <GlobalBanner />   
+      <div style={appStyle}>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />        
-          <Route path="/TransactionEntry" element={<TransactionEntry />} />
-          <Route path="/TransactionUpload" element={<TransactionUpload />} />
-        </Routes>
-      </Router>
+        <div className="body-content">
+          <div id="dashboard-section">
+            <Dashboard />
+          </div>
+          <div id="transaction-entry-section">
+            <TransactionEntry />
+          </div>
+          <div id="transaction-upload-section">
+            <TransactionUpload />
+          </div>
+        </div>
+      </div>
     </ThemeProvider>
+    </ErrorBoundary>
   );
 };
 

@@ -8,7 +8,7 @@ import transactionEntryService from 'components/services/transactionEntryService
 
 const TransactionEntryForm = () => {
   // Flag to control data fetching
-  const shouldFetchData = true; // Set to true to fetch from server, false to use mock data
+  const shouldFetchData = false; // Set to true to fetch from server, false to use mock data
   const [transaction, setTransaction] = useState({
     amount: '',
     date: ''
@@ -115,8 +115,6 @@ const TransactionEntryForm = () => {
         amount: transaction.amount,
         date: transaction.date,
       };
-
-      
   
       await transactionEntryService.addTransaction(transactionData);
             // Set success message
@@ -126,9 +124,7 @@ const TransactionEntryForm = () => {
             console.error('Error submitting transaction:', error);
             // Set error message
             setMessage('Failed to create transaction.');
-            setMessageType('error');
-
-      
+            setMessageType('error'); 
     }
   };
   

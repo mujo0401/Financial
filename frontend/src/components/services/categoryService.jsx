@@ -1,13 +1,11 @@
 import axios from 'axios';
 
-
-
-//const CAT_URL = 'http://localhost:3000/api/categories'; 
+const CAT_URL = 'http://localhost:3000/api/categories'; 
 
 const categoryService = {
     getCategories: async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/categories`);
+        const response = await axios.get(CAT_URL);
         return response.data;
       } catch (error) {
         console.error('Error fetching categories:', error);

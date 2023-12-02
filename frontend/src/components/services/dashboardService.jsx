@@ -1,33 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
+const DASHBOARD_URL = 'http://localhost:3000/api/dashboard'; // Adjust this base URL as per your actual API endpoint
 
-const MonthlySpendingChart = () => {
-  const [spendingData, setSpendingData] = useState([]);
-
-  useEffect(() => {
-    // Fetch monthly spending data from your API
-    // Assume the API returns an array of objects with category and amount
-    fetch('/api/monthly-spending')
-      .then(response => response.json())
-      .then(data => setSpendingData(data))
-      .catch(error => console.error('Error fetching data:', error));
-  }, []);
-
-  // Prepare data for the bar chart
-  const chartData = {
-    labels: spendingData.map(item => item.category),
-    datasets: [{
-      label: 'Monthly Spending',
-      data: spendingData.map(item => item.amount),
-      backgroundColor: 'rgba(54, 162, 235, 0.5)',
-    }],
-  };
-
-  return (
-    <div>
-      <Bar data={chartData} />
-    </div>
-  );
+// Fetch spending data over time
+export const fetchSpendingOverTime = async (startDate, endDate) => {
+  try {
+    const response = await fetch(`${DASHBOARD_URL}/spending-over-time?startDate=${startDate}&endDate=${endDate}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching spending over time:', error);
+    throw error;
+  }
 };
 
-export default MonthlySpendingChart;
+// Fetch category-wise spending data
+export const fetchCategoryWiseSpending = async (startDate, endDate) => {
+  try {
+    const response = await fetch(`${DASHBOARD_URL}/category-wise-spending?startDate=${startDate}&endDate=${endDate}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching category-wise spending:', error);
+    throw error;
+  }
+};
+
+// Fetch monthly income vs expense data
+export const fetchMonthlyIncomeVsExpense = async (year) => {
+  try {
+    const response = await fetch(`${DASHBOARD_URL}/monthly-income-expense?year=${year}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching monthly income vs expense:', error);
+    throw error;
+  }
+};
