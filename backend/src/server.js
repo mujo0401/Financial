@@ -23,9 +23,8 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const PORT = process.env.PORT || 443;
+const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/FinanceDB';
-
 
 const connectDB = async () => {
   try {
@@ -63,8 +62,8 @@ const upload = multer({ storage: storage });
 
 // API routes
 app.use('/api/files', fileRoute);
-app.use('/api/transactions', transactionRoute);
 app.use('/api/upload', upload.array('files', 10), uploadRoute);
+app.use('/api/transactions', transactionRoute);
 app.use('/api/categories', categoryRoute);
 app.use('/api/descriptions', descriptionRoute);
 app.use('/api/health', healthRoute);
@@ -85,8 +84,6 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
-
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

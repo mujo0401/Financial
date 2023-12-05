@@ -1,6 +1,6 @@
 import fs from 'fs';
 import readXlsxFile from 'read-excel-file/node';
-import Transaction  from '../models/transactionModel.js';
+import Transaction from '../models/transactionModel.js';
 
 // Category keywords mapping
 const categoryKeywords = {
@@ -21,9 +21,7 @@ const categoryKeywords = {
   "Gaming": ["STEAM"]
 };
 
-// Function to assign a category based on description
 function assignCategory(description) {
-  // Check if description is a string and not empty
   if (typeof description === 'string' && description.trim() !== '') {
     for (const [category, keywords] of Object.entries(categoryKeywords)) {
       if (keywords.some(keyword => description.includes(keyword))) {
@@ -31,41 +29,9 @@ function assignCategory(description) {
       }
     }
   }
-  return "Other"; // Default category if no keyword matches or description is not a string
+  return "Other"; // Default category if no keyword matches
 }
 
-// Function to get or create a category and return its ID
-async function getCategoryId(categoryName) {
-  let categoryDocument = await Category.findOne({ categoryName });
-  if (!categoryDocument) {
-    categoryDocument = new Category({ categoryName });
-    await categoryDocument.save();
-  }
-  return categoryDocument._id;
-}
-
-// Function to process transactions and summarize data
-async function processTransactions(transactions) {
-  const summary = {};
-
-  for (const transaction of transactions) {
-    const category = await getCategoryId(assignCategory(transaction[2])); // Assuming description is in the 3rd column
-    if (!summary[category]) {
-      summary[category] = { Amount: 0, LatestDate: new Date(0) };
-    }
-    const amount = parseFloat(transaction[3]); // Assuming amount is in the 4th column
-    summary[category].Amount += isNaN(amount) ? 0 : amount;
-
-    const transDate = new Date(transaction[1]); // Assuming date is in the 2nd column
-    if (transDate > summary[category].LatestDate) {
-      summary[category].LatestDate = transDate;
-    }
-  }
-
-  return summary;
-}
-
-// Main function to parse Excel file and insert transactions
 export async function parseExcelFile(filePath) {
   if (!fs.existsSync(filePath)) {
     console.error('File not found:', filePath);
@@ -73,34 +39,27 @@ export async function parseExcelFile(filePath) {
   }
 
   const rows = await readXlsxFile(filePath);
-  const rawDataArray = rows.slice(12); // Skip the first 12 rows
+  const transactionsData = rows.slice(1); // Skip the header row
 
-  const transactionsSummary = processTransactions(rawDataArray);
-  const transactionsToInsert = Object.entries(transactionsSummary).map(([category, data]) => {
-    const descriptions = categoryDescriptionsMap.get(category) || [];
-    // You can choose the first description, a random one, or any other logic
-    const description = descriptions.length > 0 ? descriptions[0] : `No description for ${category}`;
+  const transactionsToInsert = transactionsData.map(transactionRow => {
+    const description = transactionRow[1]; // Adjust index based on where description is in your row
+    const amount = parseFloat(transactionRow[2]); // Adjust index based on where amount is in your row
+    const date = new Date(transactionRow[0]); // Adjust index based on where date is in your row
 
-    return {
-        description: description,
-        amount: data.Amount,
-        category: category,
-        date: data.LatestDate
-    };
-});
+    return new Transaction({
+      date,
+      description,
+      amount,
+      category: assignCategory(description)
+    });
+  });
 
-  if (transactionsToInsert.length > 0) {
-    try {
-      // Bulk insert the summarized transactions
-      const insertedTransactions = await Transaction.insertMany(transactionsToInsert);
-      console.log(`Successfully inserted ${insertedTransactions.length} transactions.`);
-      return insertedTransactions;
-    } catch (error) {
-      console.error('Failed to insert transactions:', error);
-      return [];
-    }
-  } else {
-    console.error('No valid transactions to insert');
+  try {
+    await Transaction.insertMany(transactionsToInsert);
+    console.log(`Successfully inserted ${transactionsToInsert.length} transactions.`);
+    return transactionsToInsert;
+  } catch (error) {
+    console.error('Failed to insert transactions:', error);
     return [];
   }
 }

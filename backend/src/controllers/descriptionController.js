@@ -1,8 +1,8 @@
-import descriptionRepository from '../repositories/descriptionRepository';
+import Description from '../models/descriptionModel.js'; 
 
-const getDescriptions = (req, res) => {
+const getDescriptions = async (req, res) => {
   try {
-    const descriptions = descriptionRepository.getDescriptions();
+    const descriptions = await Description.find({});
     res.json(descriptions);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching descriptions' });

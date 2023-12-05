@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const FILE_URL = 'http://localhost:3000/api/upload';
+const UPLOAD_URL = 'http://localhost:3000/api/upload';
 
 const FileHandling = {
   uploadFiles: async function(files) {
@@ -10,29 +10,22 @@ const FileHandling = {
         formData.append('files', file);
       });
 
-      const response = await axios.post(FILE_URL, formData, {
+      const response = await axios.post(UPLOAD_URL, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('token')}`
         }
       });
 
-      return response.data;
+      return { data: response.data, error: null };
     } catch (error) {
-      console.error('Error adding transactions:', error);
-      if (error.response) {
-        console.error('Error Data:', error.response.data);
-        console.error('Error Status:', error.response.status);
-        console.error('Error Headers:', error.response.headers);
-      } else if (error.request) {
-        console.error('Error Request:', error.request);
-      } else {
-        console.error('Error Message:', error.message);
-      }
-
-      return [];
+      return {
+        data: null,
+        error: error.response ? error.response.data.message : 'Failed to upload file'
+      };
     }
   },
+
 
   getFileHash: async function(file) {
     const arrayBuffer = await file.arrayBuffer();

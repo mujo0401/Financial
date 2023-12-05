@@ -8,7 +8,7 @@ import ErrorBoundary from 'components/errorHandling/errorBoundary';
 import TransactionUpload from 'components/pages/transactionUpload';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from 'components/assets/globalAssets/globalStyle'; 
+import theme from 'components/assets/globalStyle'; 
 import Dashboard from 'components/pages/dashboard'
 
 const App = () => {

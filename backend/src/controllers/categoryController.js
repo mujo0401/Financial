@@ -1,8 +1,8 @@
-import categoryRepository from '../repositories/categoryRepository.js';
+import Category from '../models/categoryModel.js'; 
 
-const getCategories = (req, res) => {
+const getCategories = async (req, res) => {
   try {
-    const categories = categoryRepository.getCategories();
+    const categories = await Category.find({});
     res.json(categories);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching categories' });

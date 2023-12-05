@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import FileDrop from 'components/utils/dragndropUtil';
-import FileHandling from 'components/services/transactionUploadService';
+import FileHandling from 'components/services/fileService';
 import moment from 'moment';
-import { Style } from 'components/assets/localAssets/localStyle';
-import { deleteButtonStyle, processButtonStyle } from 'components/assets/globalAssets/globalStyle';
+import { Style } from 'components/assets/localStyle';
+import { deleteButtonStyle, processButtonStyle } from 'components/assets/globalStyle';
 import { Button } from '@mui/material';
 
 const TransactionUploadForm = () => {
-  const [files, setFiles] = useState([]); // Tracks file info
-  const [actualFiles, setActualFiles] = useState([]); // Tracks actual file objects
-  const [duplicateFiles, setDuplicateFiles] = useState([]); // Tracks duplicate files
+  const [files, setFiles] = useState([]); 
+  const [actualFiles, setActualFiles] = useState([]); 
+  const [duplicateFiles, setDuplicateFiles] = useState([]); 
   const [uploadMessage, setUploadMessage] = useState('');
   const [uploadError, setUploadError] = useState('');
 

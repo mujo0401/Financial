@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import FileHandling from 'components/services/transactionUploadService'; 
+import FileHandling from 'components/services/fileService'; 
 import moment from 'moment';
 
 const FileDrop = ({ onFilesAdded }) => {

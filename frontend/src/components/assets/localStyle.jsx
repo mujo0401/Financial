@@ -1,15 +1,13 @@
 import { styled } from '@mui/material/styles';
-import theme  from 'components/assets/globalAssets/globalStyle'
 
-// Styled Table
+
 export const StyledTable = styled('table')(({ theme }) => ({
   width: '100%',
   borderCollapse: 'collapse',
   boxShadow: '0 2px 15px rgba(0, 0, 0, 0.1)',
-  // ... other styles
 }));
 
-// Styled Table Header (th)
+
 export const StyledTh = styled('th')(({ theme }) => ({
   padding: '10px 15px',
   border: '1px solid #ddd',
@@ -49,34 +47,48 @@ export const Button = styled('button')(({ theme }) => ({
   },
 }));
 
-
-// Styled Input
 export const Input = styled('input')(({ theme }) => ({
   display: 'block',
   padding: '10px',
-  border: `1px solid ${theme.palette.primary.main}`, // Corrected border style
+  border: `1px solid ${theme.palette.primary.main}`, 
   borderRadius: theme.shape.borderRadius,
   margin: '10px 0 10px 10px',
-  width: '30%', // Added percentage sign
-  boxSizing: 'border-box', // camelCase for CSS property
-
+  width: '30%', 
+  boxSizing: 'border-box', 
   '&:focus': {
-    borderColor: theme.palette.primary.main, // borderColor for focus
+    borderColor: theme.palette.primary.main, 
     outline: 'none',
   },
+}));
+
+export const DropzoneStyles = styled('div')(({ theme }) => ({
+  baseStyle: {
+    borderWidth: '5px',
+    borderStyle: 'dashed',
+    borderColor: theme.palette.primary.main,
+    borderRadius: theme.shape.borderRadius,
+    padding: '20px',
+    textAlign: 'center',
+    cursor: 'pointer',
+    transition: 'border .24s ease-in-out, background-color .24s ease-in-out'
+  },
+  activeStyle: {
+    borderColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.light 
+  }
 }));
 
 export const Label = styled('label')(({ theme }) => ({
   display: 'block',
   marginBottom: '8px',
   color: '#333',
-  fontSize: '16px', // Use camelCase for CSS properties
+  fontSize: '16px', 
   fontWeight: 'bold',
   lineHeight: 1.5,
   textTransform: 'uppercase',
 
   '&:focus-within': {
-    color: '#1B39E3', // Assuming this color is what you want
+    color: '#1B39E3', 
   },
 }));
 

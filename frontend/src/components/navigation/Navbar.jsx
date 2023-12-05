@@ -1,6 +1,6 @@
 // In Navbar.js
 
-import { Button } from 'components/assets/localAssets/localStyle';
+import { Button } from 'components/assets/localStyle';
 
 const Navbar = () => {
   const scrollToSection = (sectionId) => {
