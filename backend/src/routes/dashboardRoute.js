@@ -1,5 +1,5 @@
 import express from 'express';
-import { getCategoryWiseSpending, getMonthlyIncomeVsExpense, getSpendingOverTime} from '../controllers/dashboardController.js';
+import { handleCategoryWiseSpendingRequest, getMonthlyIncomeVsExpense, getSpendingOverTime} from '../controllers/dashboardController.js';
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/spending-over-time', getSpendingOverTime);
 
 // Route for getting category-wise spending
-router.get('/category-wise-spending', getCategoryWiseSpending);
+router.get('/category-wise-spending', handleCategoryWiseSpendingRequest);
 
 // Route for getting monthly income vs expense
 router.get('/monthly-income-expense', getMonthlyIncomeVsExpense);

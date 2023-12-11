@@ -1,19 +1,19 @@
 // transactionUpload.jsx
 import React from 'react';
-import TransactionUploadForm from 'components/pages/forms/transactionUploadForm'; 
+import TransactionImportForm from 'components/pages/forms/transactionImportForm'; 
 import { Container } from '@mui/material';
 import ErrorBoundary from 'components/errorHandling/errorBoundary';
 
 
-const TransactionUpload = () => {
+const TransactionImport = () => {
   return (
     <ErrorBoundary>
     <Container>
       <h1>Upload Your Files (Multiple Transaction Entries)</h1>
-      <TransactionUploadForm />
+      <TransactionImportForm />
     </Container>
     </ ErrorBoundary>
   );
 };
 
-export default TransactionUpload;
+export default TransactionImport;

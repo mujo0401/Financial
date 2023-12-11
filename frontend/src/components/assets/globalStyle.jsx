@@ -20,7 +20,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: 'Roboto, sans-serif',
-    fontSize: '16px',
+    fontSize: 16,
     h1: {
       fontSize: '2em',
       fontWeight: 'bold',

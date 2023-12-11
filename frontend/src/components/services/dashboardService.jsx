@@ -4,7 +4,12 @@ const TRANSACTIONURL = 'http://localhost:3000/api/transactions'
 // Fetch spending data over time
 export const fetchSpendingOverTime = async (startDate, endDate) => {
   try {
-    const response = await fetch(`${DASHBOARD_URL}/dashboard/spending-over-time?startDate=${startDate}&endDate=${endDate}`);
+    const response = await fetch(`${DASHBOARD_URL}/dashboard/spending-over-time?startDate=${startDate}&endDate=${endDate}`, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    }
+  });
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -18,7 +23,13 @@ export const fetchSpendingOverTime = async (startDate, endDate) => {
 // Fetch category-wise spending data
 export const fetchCategoryWiseSpending = async (startDate, endDate) => {
   try {
-    const response = await fetch(`${DASHBOARD_URL}/category-wise-spending?startDate=${startDate}&endDate=${endDate}`);
+    const response = await fetch(`${DASHBOARD_URL}/category-wise-spending?startDate=${startDate}&endDate=${endDate}`, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }
+    });
+    
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -32,7 +43,12 @@ export const fetchCategoryWiseSpending = async (startDate, endDate) => {
 // Fetch monthly income vs expense data
 export const fetchMonthlyIncomeVsExpense = async (year) => {
   try {
-    const response = await fetch(`${DASHBOARD_URL}/monthly-income-expense?year=${year}`);
+    const response = await fetch(`${DASHBOARD_URL}/monthly-income-expense?year=${year}`, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      }
+    });
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -45,7 +61,13 @@ export const fetchMonthlyIncomeVsExpense = async (year) => {
 
 // Fetch transactions aggregated by category
 export const fetchTransactionsByCategory = async () => {
-  const response = await fetch(`${TRANSACTIONURL}/transactions/category-wise`);
+  const response = await fetch(`${TRANSACTIONURL}/transactions/category-wise`, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    }
+  });
+  
   if (!response.ok) {
     throw new Error('Network response was not ok');
   }

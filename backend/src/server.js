@@ -3,13 +3,11 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import multer from 'multer';
 import morgan from 'morgan';
 import transactionRoute from './routes/transactionRoute.js';
 import categoryRoute from './routes/categoryRoute.js'; 
 import descriptionRoute from './routes/descriptionRoute.js'; 
-import fileRoute from './routes/fileRoute.js';
-import uploadRoute from './routes/uploadRoute.js';
+import transactionImportRoute from './routes/transactionImportRoute.js';
 import healthRoute from './routes/healthRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
 
@@ -39,30 +37,15 @@ const connectDB = async () => {
 
 connectDB();
 
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/')
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix);
-  }
-});
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Static file serving
 app.use(express.static(path.join(__dirname, 'public'))); 
 
-// Multer upload setup
-const upload = multer({ storage: storage });
-
 
 // API routes
-app.use('/api/files', fileRoute);
-app.use('/api/upload', upload.array('files', 10), uploadRoute);
+app.use('/api/import', transactionImportRoute); 
 app.use('/api/transactions', transactionRoute);
 app.use('/api/categories', categoryRoute);
 app.use('/api/descriptions', descriptionRoute);

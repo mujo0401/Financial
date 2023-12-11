@@ -21,6 +21,17 @@ const descriptionService = {
   
         return [];
       }
+    },
+
+    addDescription: async (description) => {
+      try {
+        const response = await axios.post(DESC_URL, { name: description });
+        return response.data;
+      } catch (error) {
+        console.error('Error adding new description:', error);
+        // Additional error handling...
+        throw error;
+      }
     }
   };
   

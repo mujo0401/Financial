@@ -5,7 +5,7 @@ import Navbar from 'components/navigation/Navbar';
 import checkBackendHealth from 'components/services/healthCheckService';
 import TransactionEntry from 'components/pages/transactionEntry';
 import ErrorBoundary from 'components/errorHandling/errorBoundary';
-import TransactionUpload from 'components/pages/transactionUpload';
+import TransactionImport from 'components/pages/transactionImport';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from 'components/assets/globalStyle'; 
@@ -38,8 +38,8 @@ const App = () => {
           <div id="transaction-entry-section">
             <TransactionEntry />
           </div>
-          <div id="transaction-upload-section">
-            <TransactionUpload />
+          <div id="transaction-import-section">
+            <TransactionImport />
           </div>
         </div>
       </div>

@@ -16,16 +16,29 @@ export const getSpendingOverTime = async (startDate, endDate) => {
 
 // Category-wise Spending
 export const getCategoryWiseSpending = async (startDate, endDate) => {
-  try {
-    return await Transaction.aggregate([
-      { $match: { date: { $gte: startDate, $lte: endDate } } },
-      { $group: { _id: "$categoryId", totalAmount: { $sum: "$amount" } } },
-      { $sort: { totalAmount: -1 } }
-    ]);
-  } catch (error) {
-    console.error("Error in getting category-wise spending:", error);
-    throw error;
+  // Make sure startDate and endDate are valid Date objects
+  if (!(startDate instanceof Date) && !(endDate instanceof Date)) {
+    throw new Error('Invalid date parameters');
   }
+
+  const categorySpending = await Transaction.aggregate([
+    { $match: { date: { $gte: startDate, $lte: endDate } } },
+    { $group: { _id: "$categoryId", totalAmount: { $sum: "$amount" } } },
+    { $lookup: {
+        from: "categories", // Replace with your category collection name
+        localField: "_id", // This should match the grouped field
+        foreignField: "_id",
+        as: "categoryDetails"
+    }},
+    { $unwind: "$categoryDetails" },
+    { $project: {
+        _id: 0,
+        name: "$categoryDetails.name",
+        amount: "$totalAmount"
+    }}
+  ]);
+
+  return categorySpending;
 };
 
 // Monthly Income vs Expense

@@ -11,7 +11,7 @@ const Navbar = () => {
     <nav>
       <Button onClick={() => scrollToSection('dashboard-section')}>Dashboard</Button>
       <Button onClick={() => scrollToSection('transaction-entry-section')}>Transaction Entry</Button>
-      <Button onClick={() => scrollToSection('transaction-upload-section')}>Transaction Upload</Button>
+      <Button onClick={() => scrollToSection('transaction-import-section')}>Transaction Import</Button>
     </nav>
   );
 };

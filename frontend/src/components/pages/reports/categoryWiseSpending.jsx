@@ -10,15 +10,14 @@ const CategoryWiseSpending = ({ data }) => {
     return <div>No category data available or data is loading.</div>;
   }
 
-        // Assuming data is an array of objects with keys '_id' and 'totalAmount'
-        const labels = data.map(item => item.name || 'Unknown');
-        const amounts = data.map(item => item.amount || 0);
+  const labels = data.map(item => item.name || 'Unknown');
+  const amounts = data.map(item => item.amount || 0);
 
-        const chartData = {
-          labels,
+  const chartData = {
+    labels,
           datasets: [
             {
-              label: 'Category Wise Spending',
+              label: 'Spending',
               data: amounts,
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
@@ -91,9 +90,11 @@ const CategoryWiseSpending = ({ data }) => {
 
   return (
     <div>
-      <h2>Category Wise Spending</h2>
+    <h2>Category Wise Spending</h2>
+    <div style={{ width: '400px', height: '400px' }}>
       <Pie data={chartData} />
     </div>
+  </div>
   );
 };
 

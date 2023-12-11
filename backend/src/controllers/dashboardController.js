@@ -14,15 +14,19 @@ export const getSpendingOverTime = async (req, res) => {
 };
 
 // Controller function for getting category-wise spending
-export const getCategoryWiseSpending = async (req, res) => {
-  const { startDate, endDate } = req.query;
-
+export const handleCategoryWiseSpendingRequest = async (req, res, next) => {
   try {
+    const { startDate, endDate } = req.query;
+
+    // Parse dates and pass them to the repository function
     const data = await dashboardRepository.getCategoryWiseSpending(new Date(startDate), new Date(endDate));
     res.json(data);
   } catch (error) {
-    console.error("Error in getCategoryWiseSpending:", error);
-    res.status(500).send("Error fetching category-wise spending data");
+    // Handle errors, including invalid date errors
+    if (error.message === 'Invalid date parameters') {
+      return res.status(400).send(error.message);
+    }
+    next(error);
   }
 };
 
@@ -39,4 +43,3 @@ export const getMonthlyIncomeVsExpense = async (req, res) => {
   }
 };
 
-// Add more controller functions as needed...

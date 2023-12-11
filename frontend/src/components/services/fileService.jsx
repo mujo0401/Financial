@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const UPLOAD_URL = 'http://localhost:3000/api/upload';
+const IMPORT_URL = 'http://localhost:3000/api/import';
 
 const FileHandling = {
   uploadFiles: async function(files) {
@@ -10,7 +10,7 @@ const FileHandling = {
         formData.append('files', file);
       });
 
-      const response = await axios.post(UPLOAD_URL, formData, {
+      const response = await axios.post(IMPORT_URL, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -25,7 +25,6 @@ const FileHandling = {
       };
     }
   },
-
 
   getFileHash: async function(file) {
     const arrayBuffer = await file.arrayBuffer();

@@ -1,78 +1,84 @@
-import multer from 'multer';
-import pkg from 'multer-gridfs-storage';
-const GridFsStorage = pkg.GridFsStorage;
+import fs from 'fs';
 import crypto from 'crypto';
-import path from 'path';
-import mongoose from 'mongoose';
-import { File } from '../models/fileModel.js';
+import File from '../models/fileModel.js';
 
-// Set up GridFS storage
-const storage = new GridFsStorage({
-  db: mongoose.connection,
-  file: (req, file) => {
+const generateHash = (filePath) => {
     return new Promise((resolve, reject) => {
-      crypto.randomBytes(16, (err, buf) => {
-        if (err) {
-          return reject(err);
+        const hash = crypto.createHash('sha256');
+        const stream = fs.createReadStream(filePath);
+
+        stream.on('data', (data) => {
+            hash.update(data);
+        });
+
+        stream.on('end', () => {
+            resolve(hash.digest('hex'));
+        });
+
+        stream.on('error', (err) => {
+            reject(err);
+        });
+    });
+};
+
+export const importFiles = async (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).send('No files uploaded.');
         }
-        const filename = buf.toString('hex') + path.extname(file.originalname);
-        const fileInfo = {
-          filename: filename,
-          bucketName: 'uploads',
-        };
-        resolve(fileInfo);
-      });
-    });
-  },
-});
 
-export const getFile = async (req, res, next) => {
-  try {
-      const files = await FileModel.find();
-      res.json(files);
-  } catch (error) {
-      next(error);
-  }
-};
+        for (const file of req.files) {
+            const hash = await generateHash(file.path);
+            const duplicate = await File.findOne({ hash });
 
-export const deleteFile = (req, res) => {
-  const file_id = req.params.fileId;
+            if (duplicate) {
+                fs.unlinkSync(file.path); // Remove the file if it's a duplicate
+                continue; // Skip further processing for this file
+            }
 
-  if (!mongoose.Types.ObjectId.isValid(file_id)) {
-    return res.status(400).json({ error: 'Invalid file ID' });
-  }
+            const fileData = {
+                originalName: file.originalname,
+                encoding: file.encoding,
+                mimetype: file.mimetype,
+                size: file.size,
+                hash
+            };
 
-  const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-    bucketName: 'uploads',
-  });
-  
-  bucket.delete(mongoose.Types.ObjectId(file_id), (err) => {
-    if (err) {
-      // Log the error for debugging purposes
-      console.error(err);
-      return res.status(404).json({ error: 'File not found or could not be deleted' });
+            const newFile = new File(fileData);
+            await newFile.save();
+        }
+
+        res.status(201).send({ message: 'Files uploaded and processed successfully.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error.message);
     }
-    res.status(200).json({ message: 'File deleted successfully' });
-  });
 };
 
+export const getFiles = async (req, res) => {
+    try {
+        const files = await File.find();
+        res.status(200).send(files);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
 
-const upload = multer({ storage: storage });
-
-export const uploadFile = (req, res) => {
-    upload.array('files')(req, res, (err) => {
-      if (err) {
-        return res.status(500).json({ error: err.message });
+export const deleteFiles = async (req, res) => {
+  try {
+      const file = await File.findById(req.params.id);
+      if (!file) {
+          return res.status(404).send('File not found.');
       }
-      // Assume that files have been uploaded and file information is in req.files
-      const fileData = req.files.map(f => ({
-        filename: f.filename,
-        contentType: f.contentType,
-        size: f.size,
-        // Add any other relevant metadata you want to store
-      }));
-      File.insertMany(fileData)
-      .then(() => res.status(201).json({ message: 'Files uploaded and metadata saved.' }))
-      .catch(error => res.status(500).json({ error: error.message }));
-    });
-  };
+
+      // Delete file from the file system
+      await fs.unlink(file.path);
+
+      // Remove file metadata from database
+      await file.remove();
+
+      res.send({ message: 'File deleted successfully.' });
+  } catch (error) {
+      res.status(500).send(error.message);
+  }
+};
