@@ -4,12 +4,18 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+
+  const getmonthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const getMonthName = (monthNumber) => 
+ {
+    return getmonthNames[monthNumber - 1]; 
+ }
+
 const MonthlyIncomeVsExpense = ({ data }) => {
   if (!Array.isArray(data)) {
     return <div>No data available or data is loading.</div>;
   }
-
-  const labels = data.map(item => `Month ${item._id}`);
+  const labels = data.map(item => getMonthName(item.monthNumber));
   const income = data.map(item => item.totalIncome);
   const expense = data.map(item => item.totalExpense);
 
@@ -50,11 +56,13 @@ const MonthlyIncomeVsExpense = ({ data }) => {
   return (
     <div>
       <h2>Monthly Income vs Expense</h2>
+      <div style={{ width: '400px', height: '400px' }}>
       <Bar
-        key={`monthly-income-expense-${new Date().getTime()}`} // Unique key to handle component re-rendering
+        key={`monthly-income-expense-${new Date().getTime()}`} 
         data={chartData}
         options={options}
       />
+      </div>
     </div>
   );
 }

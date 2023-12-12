@@ -1,30 +1,34 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api/files'; // Replace with your server's URL
+const API_URL = 'http://localhost:3000/api/files'; 
 
-// Function to hash files
-async function hashFile(file) {
+function readFileAsArrayBuffer(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = async (event) => {
-            const arrayBuffer = event.target.result;
-            const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            resolve(hashHex);
+        reader.onload = () => {
+            resolve(reader.result);
         };
-        reader.onerror = (error) => {
-            reject(error);
-        };
-        if (file instanceof Blob) { // Ensure file is a Blob or File
-            reader.readAsArrayBuffer(file);
-        } else {
-            reject(new Error("The provided value is not a Blob or File."));
-        }
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
     });
 }
 
-// Function to upload transaction files
+
+// Function to hash files
+async function hashFile(file) {
+    let buffer;
+    if (file.arrayBuffer) {
+        buffer = await file.arrayBuffer();
+    } else {
+        buffer = await readFileAsArrayBuffer(file);
+    }
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
+// Function to import transaction files
 const importTransactionFiles = async (files) => {
     const formData = new FormData();
     files.forEach(file => {

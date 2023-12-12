@@ -3,7 +3,7 @@ import axios from 'axios';
 const IMPORT_URL = 'http://localhost:3000/api/import';
 
 const FileHandling = {
-  uploadFiles: async function(files) {
+  importFile: async function(files) {
     try {
       const formData = new FormData();
       files.forEach(file => {
@@ -23,6 +23,16 @@ const FileHandling = {
         data: null,
         error: error.response ? error.response.data.message : 'Failed to upload file'
       };
+    }
+  },
+
+  deleteFileByHash: async (fileHash) => {
+    try {
+      const response = await axios.delete(`${IMPORT_URL}/${fileHash}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      throw error;
     }
   },
 

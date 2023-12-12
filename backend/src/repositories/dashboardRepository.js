@@ -1,10 +1,23 @@
 import Transaction from '../models/transactionModel.js';
+import Category from '../models/categoryModel.js'
 
 // Spending over time
 export const getSpendingOverTime = async (startDate, endDate) => {
   try {
     return await Transaction.aggregate([
-      { $match: { date: { $gte: startDate, $lte: endDate } } },
+      {
+        $lookup: {
+          from: Category.collection.name,
+          localField: 'categoryId', 
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      { $unwind: '$category' },
+      { $match: { 
+          date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+          'category.name': 'Expense' 
+      }},
       { $group: { _id: { $month: "$date" }, totalAmount: { $sum: "$amount" } } },
       { $sort: { '_id': 1 } }
     ]);
@@ -16,7 +29,7 @@ export const getSpendingOverTime = async (startDate, endDate) => {
 
 // Category-wise Spending
 export const getCategoryWiseSpending = async (startDate, endDate) => {
-  // Make sure startDate and endDate are valid Date objects
+
   if (!(startDate instanceof Date) && !(endDate instanceof Date)) {
     throw new Error('Invalid date parameters');
   }
@@ -25,8 +38,8 @@ export const getCategoryWiseSpending = async (startDate, endDate) => {
     { $match: { date: { $gte: startDate, $lte: endDate } } },
     { $group: { _id: "$categoryId", totalAmount: { $sum: "$amount" } } },
     { $lookup: {
-        from: "categories", // Replace with your category collection name
-        localField: "_id", // This should match the grouped field
+        from: "categories", 
+        localField: "_id", 
         foreignField: "_id",
         as: "categoryDetails"
     }},
@@ -42,18 +55,47 @@ export const getCategoryWiseSpending = async (startDate, endDate) => {
 };
 
 // Monthly Income vs Expense
-export const getMonthlyIncomeVsExpense = async (year) => {
+export const getMonthlyIncomeVsExpense = async (startDate, endDate) => {
   try {
-    return await Transaction.aggregate([
-      { $match: { date: { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) } } },
-      { $group: { _id: { $month: "$date" }, totalIncome: { $sum: "$income" }, totalExpense: { $sum: "$expense" } } },
+    // Check if startDate and endDate are valid Date objects
+    if (!(startDate instanceof Date) && !(endDate instanceof Date)) {
+      throw new Error('Invalid date parameters');
+    }
+
+    const monthlyExpense = await Transaction.aggregate([
+      { 
+        $match: { date: { $gte: startDate, $lte: endDate } } },
+      { 
+        $lookup: {
+          from: Category.collection.name,
+          localField: 'categoryId', 
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      { $unwind: '$category' },
+      { 
+        $group: { 
+          _id: { $month: "$date" }, 
+          totalIncome: { 
+            $sum: {
+              $cond: [{ $eq: ["$category.name", "Income"] }, "$amount", 0]
+            } 
+          },
+          totalExpense: { 
+            $sum: {
+              $cond: [{ $ne: ["$category.name", "Income"] }, "$amount", 0]
+            } 
+          } 
+        } 
+      },
       { $sort: { '_id': 1 } }
     ]);
+
+    return monthlyExpense;
   } catch (error) {
     console.error("Error in getting monthly income vs expense:", error);
     throw error;
   }
 };
-
-// Add more functions as needed...
 

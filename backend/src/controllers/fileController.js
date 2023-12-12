@@ -32,8 +32,8 @@ export const importFiles = async (req, res) => {
             const duplicate = await File.findOne({ hash });
 
             if (duplicate) {
-                fs.unlinkSync(file.path); // Remove the file if it's a duplicate
-                continue; // Skip further processing for this file
+                fs.unlinkSync(file.path); 
+                continue; 
             }
 
             const fileData = {

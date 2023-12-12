@@ -9,7 +9,7 @@ const router = express.Router();
 // Configure Multer to store files in a temporary directory
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'import/'); // Specify the folder to store temp files
+        cb(null, 'fileStore/'); // Specify the folder to store temp files
     },
     filename: (req, file, cb) => {
         cb(null, file.fieldname + '-' + Date.now()); // Generate a unique filename
@@ -19,23 +19,35 @@ const storage = multer.diskStorage({
 const multerimport = multer({ storage: storage });
 
 router.post('/import', multerimport.array('files', 10), async (req, res, next) => {
-    console.log('transactionImportroute hit');
+    console.log('transactionImport route hit');
 
-    // Process each file
-    for (const file of req.files) {
-        // Check if the file is a transaction file based on its name
-        if (file.originalname.startsWith('transactions') && file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-            // Process transaction data from file
-            await importData(req, res, next);
-        } else {
-            // Process metadata about file
-            await importFiles(req, res, next);
+    try {
+        const results = []; // Store results or errors for each file
+
+        for (const file of req.files) {
+            try {
+                if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                    await importData(req, res, next, file); // Process transaction data
+                    results.push({ file: file.originalname, status: 'Processed' });
+                } else {
+                    await importFiles(file); // Process file
+                    results.push({ file: file.originalname, status: 'Processed' });
+                }
+            } catch (error) {
+                console.error('Error processing file:', file.originalname, error);
+                results.push({ file: file.originalname, status: 'Error', error: error.message });
+            }
+
+            // Delete the temp file
+           /*fs.unlink(file.path, err => {
+                if (err) console.error('Error deleting temp file:', err);
+            });*/
         }
 
-        // Delete the temp file
-        fs.unlink(file.path, err => {
-            if (err) console.error('Error deleting temp file:', err);
-        });
+        res.status(201).json({ message: 'Files processing completed', results });
+    } catch (error) {
+        console.error('Overall processing error:', error);
+        res.status(500).send('Server Error');
     }
 });
 

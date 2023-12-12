@@ -1,11 +1,12 @@
-import * as dashboardRepository from '../repositories/dashboardRepository.js';
+import { getCategoryWiseSpending, getSpendingOverTime, getMonthlyIncomeVsExpense } from '../repositories/dashboardRepository.js';
 
 // Controller function for getting spending over time
-export const getSpendingOverTime = async (req, res) => {
+export const handleSpendingOverTime = async (req, res) => {
   const { startDate, endDate } = req.query;
 
   try {
-    const data = await dashboardRepository.getSpendingOverTime(new Date(startDate), new Date(endDate));
+    // Ensure that startDate and endDate are properly converted to Date objects
+    const data = await getSpendingOverTime(new Date(startDate), new Date(endDate));
     res.json(data);
   } catch (error) {
     console.error("Error in getSpendingOverTime:", error);
@@ -17,12 +18,9 @@ export const getSpendingOverTime = async (req, res) => {
 export const handleCategoryWiseSpendingRequest = async (req, res, next) => {
   try {
     const { startDate, endDate } = req.query;
-
-    // Parse dates and pass them to the repository function
-    const data = await dashboardRepository.getCategoryWiseSpending(new Date(startDate), new Date(endDate));
+    const data = await getCategoryWiseSpending(new Date(startDate), new Date(endDate));
     res.json(data);
   } catch (error) {
-    // Handle errors, including invalid date errors
     if (error.message === 'Invalid date parameters') {
       return res.status(400).send(error.message);
     }
@@ -31,15 +29,15 @@ export const handleCategoryWiseSpendingRequest = async (req, res, next) => {
 };
 
 // Controller function for monthly income vs expense
-export const getMonthlyIncomeVsExpense = async (req, res) => {
-  const { year } = req.query;
-
+export const handleMonthlyIncomeVsExpense = async (req, res, next) => {
   try {
-    const data = await dashboardRepository.getMonthlyIncomeVsExpense(year);
+    const { startDate, endDate } = req.query;
+    const data = await getMonthlyIncomeVsExpense(new Date(startDate), new Date(endDate));
     res.json(data);
   } catch (error) {
-    console.error("Error in getMonthlyIncomeVsExpense:", error);
-    res.status(500).send("Error fetching monthly income vs expense data");
+    if (error.message === 'Invalid date parameters') {
+      return res.status(400).send(error.message);
+    }
+    next(error);
   }
 };
-

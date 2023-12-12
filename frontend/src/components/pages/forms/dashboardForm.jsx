@@ -1,43 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import CategoryWiseSpending from 'components/pages/reports/categoryWiseSpending';
 import MonthlyIncomeVsExpense from 'components/pages/reports/monthlyIncomeVsExpense';
+import SpendingOverTime from 'components/pages/reports/spendingOverTime';
 import { Label, Input } from 'components/assets/localStyle';
-import * as dashboardService from 'components/services/dashboardService';
+import {fetchCategoryWiseSpending, fetchMonthlyIncomeVsExpense, fetchSpendingOverTime} from 'components/services/dashboardService';
 
 const DashboardForm = () => {
 
   const mockCategoryData = [
     { name: "Groceries", amount: 500 },
-    { name: "Utilities", amount: 300 },
-    { name: "Entertainment", amount: 200 },
+    { name: "Income", amount: 1920 },
   ];
 
   const [startDate, setStartDate] = useState('2023-01-01');
   const [endDate, setEndDate] = useState('2023-12-31');
-  const [year] = useState(new Date().getFullYear());
   const [loading, setLoading] = useState(true);
   const [categoryData, setCategoryData] = useState([]);
   const [incomeExpenseData, setIncomeExpenseData] = useState([]);
+  const [spendingData, setSpendingData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         // Fetching category-wise spending data
-        const categorySpendingData = await dashboardService.fetchCategoryWiseSpending(startDate, endDate);
+        const categorySpendingData = await fetchCategoryWiseSpending(startDate, endDate);
         setCategoryData(categorySpendingData);
 
         // Fetching monthly income vs expense data
-        const incomeExpenseData = await dashboardService.fetchMonthlyIncomeVsExpense(year);
+        const incomeExpenseData = await fetchMonthlyIncomeVsExpense(startDate, endDate);
         setIncomeExpenseData(incomeExpenseData);
+  
+        // Fetching spending over time data
+        const spendingData = await fetchSpendingOverTime(startDate, endDate);
+        setSpendingData(spendingData);
+  
       } catch (error) {
         console.error('Error fetching data:', error);
       }
       setLoading(false);
     };
-
+  
     fetchData();
-  }, [startDate, endDate, year]);
+  }, [startDate, endDate]);
 
   return (
     <div className="container mx-auto p-4">
@@ -64,14 +69,15 @@ const DashboardForm = () => {
 
       {loading ? (
         <div>Loading reports...</div>
-      ) : (
-        <>
-            <CategoryWiseSpending data={categoryData} />
-          <MonthlyIncomeVsExpense data={incomeExpenseData} />
+        ) : (
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <CategoryWiseSpending data={categoryData} />
+              <MonthlyIncomeVsExpense data={incomeExpenseData} />
+              <SpendingOverTime data={spendingData} />
 
-        </>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
   );
 }
 

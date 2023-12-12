@@ -4,20 +4,25 @@ import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, Title, Toolt
 
 ChartJS.register(CategoryScale, LinearScale, LineElement, Title, Tooltip, Legend);
 
+const getMonthName = (monthNumber) => {
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return monthNames[monthNumber - 1];
+}
+
 const SpendingOverTime = ({ data }) => {
   if (!Array.isArray(data) || data.length === 0) {
     return <div>No data available or data is loading.</div>;
   }
 
-  const labels = data.map(item => `Month ${item._id}`);
-  const values = data.map(item => item.totalAmount);
+  const labels = data.map(item => `${getMonthName(item._id)}`)
+  const expense = data.map(item => item.totalAmount);
 
   const chartData = {
     labels,
     datasets: [
       {
         label: 'Spending Over Time',
-        data: values,
+        data: expense,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1
@@ -46,11 +51,13 @@ const SpendingOverTime = ({ data }) => {
   return (
     <div>
       <h2>Spending Over Time</h2>
+      <div style={{ width: '400px', height: '400px' }}>
       <Line 
-  key={data.map(item => item._id).join("-")} 
+     key={`spending-over-time-${new Date().getTime()}`} 
   data={chartData} 
   options={options} 
 />
+</div>
     </div>
   );
 };
