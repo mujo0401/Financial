@@ -1,4 +1,5 @@
 
+import React from 'react';
 import DashboardForm from 'components/pages/forms/dashboardForm';
 import { Container } from '@mui/material';
 import ErrorBoundary from 'components/errorHandling/errorBoundary';

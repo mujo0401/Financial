@@ -1,35 +1,39 @@
-// AddDescriptionForm.js
 import React, { useState } from 'react';
-import descriptionService from 'components/services/descriptionService';
+import DescriptionService from 'components/services/descriptionService';
+const { addDescription } = DescriptionService;
 
-const AddDescriptionForm = ({ onDescriptionAdded }) => {
-  const [description, setDescription] = useState('');
-  const [error, setError] = useState('');
+const NewDescriptionForm = ({ onClose, onDescriptionAdded }) => {
+    const [description, setDescription] = useState('');
+    const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await descriptionService.addDescription(description);
-      onDescriptionAdded(description); // Callback to inform parent component
-      setDescription(''); // Reset the input field after successful submission
-    } catch (error) {
-      setError('Failed to add description'); // Display error message
-    }
-  };
+    const saveDescription = async () => {
+        if (!description) {
+            setError('Description cannot be empty');
+            return;
+        }
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input 
-        type="text"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Enter new description"
-        required
-      />
-      <button type="submit">Add Description</button>
-      {error && <p>{error}</p>}
-    </form>
-  );
+        try {
+            await addDescription(description);
+            onDescriptionAdded(description);
+            onClose();
+        } catch (e) {
+            setError('Failed to save description');
+            console.error(e);
+        }
+    };
+
+    return (
+        <div>
+            <input 
+                type="text" 
+                value={description} 
+                onChange={e => setDescription(e.target.value)} 
+                placeholder="Enter description" 
+            />
+            <button onClick={saveDescription}>Save</button>
+            {error && <p>{error}</p>}
+        </div>
+    );
 };
 
-export default AddDescriptionForm;
+export default NewDescriptionForm;

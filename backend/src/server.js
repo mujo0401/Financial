@@ -43,14 +43,19 @@ const __dirname = path.dirname(__filename);
 // Static file serving
 app.use(express.static(path.join(__dirname, 'public'))); 
 
-
 // API routes
-app.use('/api/import', transactionImportRoute); 
-app.use('/api/transactions', transactionRoute);
+app.use('/api/dashboard', dashboardRoute);
 app.use('/api/categories', categoryRoute);
 app.use('/api/descriptions', descriptionRoute);
+app.use('/api/transactions', transactionRoute);
+app.use('/api/files', transactionImportRoute); 
 app.use('/api/health', healthRoute);
-app.use('/api/dashboard', dashboardRoute);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 // In your Express server setup:
 app.get('/api/health', (req, res) => {
@@ -60,12 +65,6 @@ app.get('/api/health', (req, res) => {
 // React app routing for frontend
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'index.html')); 
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
 });
 
 app.listen(PORT, () => {

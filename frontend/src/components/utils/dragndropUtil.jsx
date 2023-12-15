@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import FileHandling from 'components/services/fileService'; 
+import { getFileByHash } from 'components/services/transactionImportService';
 import moment from 'moment';
 
 const FileDrop = ({ onFilesAdded }) => {
@@ -13,7 +13,7 @@ const FileDrop = ({ onFilesAdded }) => {
     const newActualFiles = [];
 
     for (const file of acceptedFiles) {
-      const fileHash = await FileHandling.getFileHash(file);
+      const fileHash = await getFileByHash(file); // Using getFileByHash directly
       if (!newHashes.has(fileHash)) {
         setFileHashes(prevHashes => new Set([...prevHashes, fileHash]));
         const fileInfo = {
@@ -28,10 +28,9 @@ const FileDrop = ({ onFilesAdded }) => {
       }
     }
 
-    // Pass the new and duplicate files back to the parent component
     setFileHashes(newHashes);
     onFilesAdded(newFiles, newActualFiles, duplicates);
-}, [fileHashes, onFilesAdded]);
+  }, [fileHashes, onFilesAdded]);
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
@@ -39,7 +38,6 @@ const FileDrop = ({ onFilesAdded }) => {
     <div {...getRootProps()} style={{ border: '2px dashed #ccc', padding: '20px', textAlign: 'center' }}>
       <input {...getInputProps()} />
       <p>Drag 'n' drop some files here, or click to select files</p>
-
     </div>
   );
 };

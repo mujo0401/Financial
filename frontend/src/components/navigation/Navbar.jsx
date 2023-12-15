@@ -1,5 +1,6 @@
 // In Navbar.js
 
+import React from 'react';
 import { Button } from 'components/assets/localStyle';
 
 const Navbar = () => {

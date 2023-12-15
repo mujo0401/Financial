@@ -1,57 +1,68 @@
+// fileRoute.js
 import express from 'express';
 import multer from 'multer';
-import { importFiles, getFiles, deleteFiles } from '../controllers/fileController.js';
-import { importData } from '../controllers/importController.js';
-import fs from 'fs';
+import { getFile, importFile, deleteFile, generateHash } from '../controllers/fileController.js';
 
 const router = express.Router();
 
-// Configure Multer to store files in a temporary directory
+// Multer setup for file storage
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'fileStore/'); // Specify the folder to store temp files
+    destination: function(req, file, cb) {
+        cb(null, 'imports/'); 
     },
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now()); // Generate a unique filename
+    filename: function(req, file, cb) {
+        cb(null, file.originalname); 
     }
 });
 
 const multerimport = multer({ storage: storage });
 
-router.post('/import', multerimport.array('files', 10), async (req, res, next) => {
-    console.log('transactionImport route hit');
-
+// Routes
+router.post('/transactionImport', multerimport.array('files', 10), async (req, res) => {
     try {
-        const results = []; // Store results or errors for each file
-
-        for (const file of req.files) {
-            try {
-                if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-                    await importData(req, res, next, file); // Process transaction data
-                    results.push({ file: file.originalname, status: 'Processed' });
-                } else {
-                    await importFiles(file); // Process file
-                    results.push({ file: file.originalname, status: 'Processed' });
-                }
-            } catch (error) {
-                console.error('Error processing file:', file.originalname, error);
-                results.push({ file: file.originalname, status: 'Error', error: error.message });
-            }
-
-            // Delete the temp file
-           /*fs.unlink(file.path, err => {
-                if (err) console.error('Error deleting temp file:', err);
-            });*/
+        if (!req.file) {
+            return res.status(400).send('No file uploaded.');
         }
 
-        res.status(201).json({ message: 'Files processing completed', results });
+        const fileHash = generateHash(req.file.path);
+
+        const fileData = {
+            fileName: req.file.originalname,
+            fileSize: req.file.size,
+            mediaType: req.file.mimetype,
+            encoding: req.encoding,
+            path: req.file.path,
+            isProcessed: false,
+            importDate: Date.now(),
+            fileHash: fileHash
+        };
+
+        const savedFile = await importFile(fileData);
+        res.status(201).json(savedFile);
     } catch (error) {
-        console.error('Overall processing error:', error);
-        res.status(500).send('Server Error');
+        res.status(500).json({ error: error.message });
     }
 });
 
-router.get('/files', getFiles);
-router.delete('/delete/:id', deleteFiles);
+router.get('/files/:hash', async (req, res) => {
+    try {
+        const files = await getFile(req.params.hash);
+        res.json(files);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+router.delete('/delete/:hash', async (req, res) => {
+    try {
+        const result = await deleteFile(req.params.hash);
+        if (result.deletedCount === 0) {
+            return res.status(404).send('No file found with the given hash.');
+        }
+        res.send('File deleted successfully');
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 export default router;

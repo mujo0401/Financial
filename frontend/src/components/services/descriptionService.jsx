@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const DESC_URL = 'http://localhost:3000/api/descriptions'; 
 
-const descriptionService = {
-    getDescriptions: async () => {
+
+     const getDescriptions = async () => {
       try {
         const response = await axios.get(DESC_URL);
         return response.data;
@@ -21,19 +21,19 @@ const descriptionService = {
   
         return [];
       }
-    },
+    };
 
-    addDescription: async (description) => {
+     const addDescription = async (descriptionName) => {
       try {
-        const response = await axios.post(DESC_URL, { name: description });
-        return response.data;
+          const response = await axios.post(DESC_URL, { name: descriptionName });
+          return response.data; 
       } catch (error) {
-        console.error('Error adding new description:', error);
-        // Additional error handling...
-        throw error;
+          console.error('Error adding description:', error);
+          throw error; 
       }
-    }
   };
-  
-  export default descriptionService;
+
+  export default { getDescriptions, addDescription};
+
+
   
